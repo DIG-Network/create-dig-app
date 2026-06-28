@@ -1,0 +1,46 @@
+{
+  "name": "create-dig-app",
+  "version": "0.1.0",
+  "description": "Scaffold a wallet-wired, deployable DIG Network app — free, no mint. The JS front door for building dapps, frontends, and NFT collections on Chia.",
+  "license": "MIT",
+  "author": "DIG Network",
+  "type": "module",
+  "bin": {
+    "create-dig-app": "bin/create-dig-app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DIG-Network/create-dig-app"
+  },
+  "homepage": "https://github.com/DIG-Network/create-dig-app#readme",
+  "bugs": {
+    "url": "https://github.com/DIG-Network/create-dig-app/issues"
+  },
+  "keywords": [
+    "dig",
+    "dig-network",
+    "chia",
+    "create-dig-app",
+    "scaffold",
+    "starter",
+    "template",
+    "dapp",
+    "nft",
+    "decentralized",
+    "wallet"
+  ],
+  "files": [
+    "bin",
+    "lib",
+    "templates",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test test/",
+    "start": "node bin/create-dig-app.js"
+  }
+}
