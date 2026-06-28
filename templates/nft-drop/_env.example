@@ -1,0 +1,7 @@
+# WalletConnect Cloud / Reown project id — enables the WalletConnect → Sage fallback so this dapp
+# connects to Sage (the main Chia wallet) in a normal browser, not just the DIG Browser.
+#
+# Get a free project id at https://cloud.reown.com (formerly WalletConnect Cloud). Copy this file to
+# `.env` (or `.env.local`) and paste your id. Leave it blank to support ONLY the injected DIG Browser
+# wallet (window.chia) — the app still builds and runs; the WC fallback is just disabled.
+VITE_WALLETCONNECT_PROJECT_ID=

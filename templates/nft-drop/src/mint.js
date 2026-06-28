@@ -7,17 +7,24 @@
 
 import { ChiaProvider } from "@dignetwork/dig-sdk";
 
+// WalletConnect Cloud / Reown project id, read from the build-time env (see .env.example). When set,
+// it enables the WalletConnect → Sage fallback so visitors without the injected DIG wallet can still
+// connect Sage (the main Chia wallet) in a normal browser. Get a free id at https://cloud.reown.com.
+const WALLETCONNECT_PROJECT_ID = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID ?? "";
+
 /**
- * Connect a wallet for the drop. Prefers the injected DIG Browser wallet (window.chia), falls back
- * to WalletConnect → Sage when a project id is configured.
+ * Connect a wallet for the drop. `mode: "auto"` prefers the injected DIG Browser wallet
+ * (window.chia) and falls back to WalletConnect → Sage when a project id is configured (the SDK
+ * drives its `WalletConnectTransport` under the hood — we never hand-roll WC).
+ *
+ * @param {{ onUri?: (uri: string) => void }} [hooks] `onUri` receives the WalletConnect pairing URI
+ *   so the UI can show a QR / copy-link / deep link to Sage during the fallback.
  * @returns {Promise<import("@dignetwork/dig-sdk").ChiaProvider>}
  */
-export async function connectWallet() {
-  // Set a WalletConnect Cloud project id (https://cloud.walletconnect.com) to enable the fallback,
-  // and `npm i @walletconnect/sign-client`.
-  const WALLETCONNECT_PROJECT_ID = "";
+export async function connectWallet(hooks = {}) {
   return ChiaProvider.connect({
-    mode: "auto",
+    mode: "auto", // prefer injected window.chia; fall back to WalletConnect → Sage if configured
+    chain: "chia:mainnet", // CAIP-2 chain the SDK expects (Chia mainnet)
     walletConnect: WALLETCONNECT_PROJECT_ID
       ? {
           projectId: WALLETCONNECT_PROJECT_ID,
@@ -27,6 +34,7 @@ export async function connectWallet() {
             url: typeof window !== "undefined" ? window.location.origin : "https://example.dig",
             icons: [],
           },
+          onUri: hooks.onUri, // render this URI as a QR / copy-link for the Sage fallback
         }
       : undefined,
   });
