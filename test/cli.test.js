@@ -52,6 +52,33 @@ test("parseArgs throws on an unknown option", () => {
   assert.throws(() => parseArgs(["--frobnicate"]), /Unknown option/);
 });
 
+// ---- language flag -------------------------------------------------------
+
+test("parseArgs reads --typescript / --ts as lang=ts", () => {
+  assert.equal(parseArgs(["x", "-t", "vite-react", "--typescript"]).lang, "ts");
+  assert.equal(parseArgs(["x", "-t", "vite-react", "--ts"]).lang, "ts");
+});
+
+test("parseArgs reads --javascript / --js as lang=js", () => {
+  assert.equal(parseArgs(["x", "-t", "vite-react", "--javascript"]).lang, "js");
+  assert.equal(parseArgs(["x", "-t", "vite-react", "--js"]).lang, "js");
+});
+
+test("parseArgs reads --lang <value> and --lang=<value>", () => {
+  assert.equal(parseArgs(["x", "--lang", "ts"]).lang, "ts");
+  assert.equal(parseArgs(["x", "--lang=ts"]).lang, "ts");
+  assert.equal(parseArgs(["x", "--lang", "typescript"]).lang, "ts");
+  assert.equal(parseArgs(["x", "--lang=javascript"]).lang, "js");
+});
+
+test("parseArgs rejects an unknown --lang value", () => {
+  assert.throws(() => parseArgs(["x", "--lang", "rust"]), /lang/i);
+});
+
+test("parseArgs leaves lang undefined when not specified", () => {
+  assert.equal(parseArgs(["x", "-t", "static"]).lang, undefined);
+});
+
 // ---- help / version ------------------------------------------------------
 
 test("helpText lists every template and the free-until-publish line", () => {
@@ -101,6 +128,39 @@ test("run scaffolds non-interactively and prints next steps", async () => {
     assert.match(out, /digstore dev/);
     assert.match(out, /digstore deploy/);
     assert.match(out, /no mint/i);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("run --typescript scaffolds the TS variant (tsconfig + TS report line)", async () => {
+  const cap = capture();
+  const dir = freshDir();
+  try {
+    const code = await run(["My App", "--template", "vite-react", "--typescript"], {
+      log: cap.log,
+      cwd: dir,
+    });
+    assert.equal(code, 0);
+    assert.ok(existsSync(join(dir, "my-app", "tsconfig.json")), "TS scaffold writes tsconfig.json");
+    assert.ok(existsSync(join(dir, "my-app", "src", "App.tsx")), "TS scaffold writes .tsx sources");
+    assert.match(cap.text(), /TypeScript/i, "reports the TS language");
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("run --template static --typescript falls back to JS and says so", async () => {
+  const cap = capture();
+  const dir = freshDir();
+  try {
+    const code = await run(["Plain", "--template", "static", "--typescript"], {
+      log: cap.log,
+      cwd: dir,
+    });
+    assert.equal(code, 0);
+    assert.ok(!existsSync(join(dir, "plain", "tsconfig.json")), "static has no tsconfig");
+    assert.match(cap.text(), /JavaScript|no TypeScript/i, "notes the JS fallback");
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

@@ -33,6 +33,7 @@
     "bin",
     "lib",
     "templates",
+    "templates-ts",
     "README.md",
     "LICENSE"
   ],

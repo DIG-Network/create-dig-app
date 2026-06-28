@@ -23,3 +23,36 @@ jobs:
       # template files + the standard library only.
       - name: Run tests
         run: node --test test/
+
+  # Smoke-test that a scaffolded TypeScript project actually installs, type-checks, and builds.
+  # The unit tests assert the file tree / metadata; this job proves the emitted project is real.
+  typescript-scaffold:
+    name: scaffold + typecheck + build (TS)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # One non-wallet (vite-react) and one wallet template (dapp-window-chia, which pulls in the
+        # SDK's shipped types) — enough to catch a broken tsconfig / typed SDK usage / build wiring.
+        template: [vite-react, dapp-window-chia]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Scaffold the TypeScript variant
+        run: node bin/create-dig-app.js sample-ts-app --template ${{ matrix.template }} --typescript
+      - name: Assert it emitted TypeScript (tsconfig + a .ts/.tsx source)
+        working-directory: sample-ts-app
+        run: |
+          test -f tsconfig.json
+          ls src/*.tsx
+      - name: Install
+        working-directory: sample-ts-app
+        run: npm install --no-audit --no-fund
+      - name: Type-check
+        working-directory: sample-ts-app
+        run: npm run typecheck
+      - name: Build
+        working-directory: sample-ts-app
+        run: npm run build
