@@ -55,13 +55,38 @@ digstore deploy   # publish a capsule when you're ready (the only step that spen
 | `vite-react` | A React SPA built with Vite — the fast default for an app frontend. | — | JS · TS |
 | `next-static` | Next.js exported to static files (`output: 'export'`), deployable as a capsule. | — | JS · TS |
 | `nft-drop` | A wallet-connected NFT mint page (`ChiaProvider` + the canonical CHIP-0035 spend builder). | yes | JS · TS |
-| `dapp-window-chia` | A dapp wired to the injected Chia wallet via `ChiaProvider` (`window.chia` → WalletConnect). | yes | JS · TS |
+| `dapp-window-chia` | A dapp wired to a Chia wallet via `ChiaProvider` — injected `window.chia`, or Sage over WalletConnect. | yes | JS · TS |
 
 The wallet templates wire [`@dignetwork/dig-sdk`](https://github.com/DIG-Network/dig-sdk): a Chia
-wallet your dapp gets for free. `ChiaProvider` **prefers the injected DIG Browser wallet**
-(`window.chia`) and **falls back to WalletConnect → Sage**. NFT minting uses the SDK's `/spend`
-builder — spends are never hand-rolled. **Nothing is minted, signed, or spent at scaffold time** —
-minting is an explicit, wallet-signed action a user triggers later.
+wallet your dapp gets for free. `ChiaProvider.connect({ mode: "auto" })` **prefers the injected DIG
+Browser wallet** (`window.chia`) and **falls back to WalletConnect → Sage** (the main Chia wallet)
+so a scaffolded dapp connects in a normal browser too — not just the DIG Browser. NFT minting uses
+the SDK's `/spend` builder — spends are never hand-rolled. **Nothing is minted, signed, or spent at
+scaffold time** — minting is an explicit, wallet-signed action a user triggers later.
+
+### Wallet connection — injected DIG Browser **or** Sage (WalletConnect)
+
+The same **Connect** button works in both worlds, in both JS and TS:
+
+| | Injected (DIG Browser / extension) | WalletConnect → Sage (any browser) |
+|---|---|---|
+| When | `window.chia` is present | no injected wallet found |
+| Setup | none | set a free **projectId** (env) |
+| UX | instant connect | pairing link / QR to approve in Sage |
+
+To enable the Sage fallback, the wallet templates ship `@walletconnect/sign-client` (the SDK's
+optional WC peer dep) as a dependency and read a **project id** from the build-time env:
+
+```sh
+cp .env.example .env
+# .env  — get a free id at https://cloud.reown.com (Reown / WalletConnect Cloud)
+VITE_WALLETCONNECT_PROJECT_ID=your_project_id_here
+```
+
+Leave it blank to support only the injected DIG Browser wallet (the app still builds and runs). The
+project id is never committed — only the placeholder `.env.example` is tracked. (The SDK throws an
+actionable error if WalletConnect is used without the peer dep / project id; the scaffolded setup
+satisfies it.)
 
 ## Usage
 

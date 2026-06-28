@@ -6,18 +6,25 @@ export default function App() {
   const [address, setAddress] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  // The WalletConnect pairing URI (only set during the WC → Sage fallback). Render it as a copy-link
+  // / QR / deep link so the user can approve the connection in Sage.
+  const [wcUri, setWcUri] = useState("");
 
   async function onConnect() {
     setError("");
+    setWcUri("");
     setBusy(true);
     try {
-      const p = await connectWallet();
+      // Works in both worlds: injected window.chia when present (DIG Browser / extension), otherwise
+      // WalletConnect → Sage. `onUri` fires only on the WC path, with the pairing URI to show.
+      const p = await connectWallet({ onUri: (uri) => setWcUri(uri) });
       setProvider(p);
       setAddress(await p.getAddress());
     } catch (e) {
       setError(e?.message ?? String(e));
     } finally {
       setBusy(false);
+      setWcUri(""); // pairing complete (or failed) — drop the URI
     }
   }
 
@@ -25,7 +32,7 @@ export default function App() {
     setError("");
     try {
       // The dev-shim wallet (in `digstore dev`) does NOT sign — open in the DIG Browser or connect a
-      // real wallet to produce a real signature.
+      // real wallet (e.g. Sage over WalletConnect) to produce a real signature.
       const { signature } = await provider.signMessage("Login to __DISPLAY_NAME__");
       alert("Signature: " + signature.slice(0, 24) + "…");
     } catch (e) {
@@ -61,6 +68,16 @@ export default function App() {
         <button onClick={onConnect} disabled={busy}>
           {busy ? "Connecting…" : "Connect wallet"}
         </button>
+      )}
+
+      {wcUri && (
+        <div className="card">
+          <p className="muted">
+            Scan or open this in <strong>Sage</strong> to connect (WalletConnect):
+          </p>
+          <code>{wcUri}</code>
+          <button onClick={() => navigator.clipboard?.writeText(wcUri)}>Copy pairing link</button>
+        </div>
       )}
 
       {error && <p className="error">{error}</p>}

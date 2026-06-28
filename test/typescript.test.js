@@ -186,6 +186,49 @@ test("wallet TS templates use typed ChiaProvider from @dignetwork/dig-sdk", () =
 });
 
 // ---------------------------------------------------------------------------
+// Wallet TS templates scaffold the WalletConnect → Sage fallback (typed).
+// ---------------------------------------------------------------------------
+
+const WC_ENV_VAR = "VITE_WALLETCONNECT_PROJECT_ID";
+
+test("wallet TS templates scaffold the WalletConnect→Sage path (dep + env + typed wiring)", () => {
+  for (const name of WALLET_TS_TEMPLATES) {
+    const root = freshDir();
+    try {
+      const dest = join(root, "app");
+      scaffold({ appName: "wallet app", template: name, lang: "ts", targetDir: dest });
+
+      // The SDK's optional WC peer dep is pulled in so the fallback works out of the box.
+      const pkg = JSON.parse(read(dest, "package.json"));
+      assert.ok(
+        (pkg.dependencies || {})["@walletconnect/sign-client"],
+        `${name} (ts) depends on @walletconnect/sign-client`,
+      );
+
+      // .env.example carries the projectId env (placeholder only) and the code reads it.
+      assert.ok(existsSync(join(dest, ".env.example")), `${name} (ts) ships .env.example`);
+      assert.match(read(dest, ".env.example"), new RegExp(`^${WC_ENV_VAR}=`, "m"));
+      assert.ok(
+        grepTree(dest, `import.meta.env.${WC_ENV_VAR}`),
+        `${name} (ts) reads ${WC_ENV_VAR}`,
+      );
+
+      // ChiaProvider auto mode + the SDK's WalletConnectOptions type drive WalletConnectTransport.
+      assert.ok(grepTree(dest, `mode: "auto"`), `${name} (ts) uses auto mode`);
+      assert.ok(grepTree(dest, "walletConnect"), `${name} (ts) passes walletConnect options`);
+      assert.ok(grepTree(dest, "projectId"), `${name} (ts) passes a projectId`);
+      // The Vite env is typed so import.meta.env.VITE_WALLETCONNECT_PROJECT_ID typechecks.
+      assert.ok(
+        grepTree(dest, "ImportMetaEnv") || grepTree(dest, WC_ENV_VAR),
+        `${name} (ts) types the Vite env`,
+      );
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }
+});
+
+// ---------------------------------------------------------------------------
 // Vite TS templates need the env shim; Next TS templates need next-env.d.ts handling.
 // ---------------------------------------------------------------------------
 

@@ -19,8 +19,24 @@ injected dev-shim `window.chia` is present, so the connect/read path runs locall
 never fakes a signature; open the dapp in the **DIG Browser** (or connect a real wallet) to sign for
 real. See <https://github.com/DIG-Network/dig-sdk> for the full API.
 
-To enable the WalletConnect fallback, set a project id from
-<https://cloud.walletconnect.com> in `src/wallet.js` and `npm i @walletconnect/sign-client`.
+## Connect to Sage in a normal browser (WalletConnect)
+
+Outside the DIG Browser there is no injected `window.chia`, so the dapp connects to **Sage** (the
+main Chia wallet) over **WalletConnect**. This needs a free **project id**:
+
+1. Get one at **<https://cloud.reown.com>** (Reown, formerly WalletConnect Cloud).
+2. Copy `.env.example` to `.env` and set it:
+
+   ```sh
+   cp .env.example .env
+   # .env
+   VITE_WALLETCONNECT_PROJECT_ID=your_project_id_here
+   ```
+
+`@walletconnect/sign-client` is already a dependency, so once the project id is set, **Connect
+wallet** shows a pairing link/QR to approve in Sage and then displays your connected address. Leave
+`VITE_WALLETCONNECT_PROJECT_ID` blank to support only the injected DIG Browser wallet. (Never commit
+`.env` — only the placeholder `.env.example` is tracked.)
 
 ## Develop
 
