@@ -32,9 +32,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # One non-wallet (vite-react) and one wallet template (dapp-window-chia, which pulls in the
-        # SDK's shipped types) — enough to catch a broken tsconfig / typed SDK usage / build wiring.
-        template: [vite-react, dapp-window-chia]
+        # One non-wallet (vite-react) and BOTH wallet templates (dapp-window-chia + nft-drop), which
+        # pull in the SDK's shipped types AND the WalletConnect→Sage wiring (@walletconnect/sign-client
+        # + the typed WalletConnectOptions, the VITE_WALLETCONNECT_PROJECT_ID env). Enough to catch a
+        # broken tsconfig / typed SDK+WC usage / build wiring (nft-drop also exercises the wasm spend
+        # builder via vite-plugin-wasm).
+        template: [vite-react, dapp-window-chia, nft-drop]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -47,6 +50,15 @@ jobs:
         run: |
           test -f tsconfig.json
           ls src/*.tsx
+      # Wallet templates must scaffold the WalletConnect→Sage path so the dapp connects to Sage in a
+      # normal browser: the SDK's optional WC peer dep + the projectId env placeholder must be present.
+      - name: Assert WalletConnect→Sage wiring on wallet templates
+        if: matrix.template == 'dapp-window-chia' || matrix.template == 'nft-drop'
+        working-directory: sample-ts-app
+        run: |
+          test -f .env.example
+          grep -q '^VITE_WALLETCONNECT_PROJECT_ID=' .env.example
+          node -e "process.exit((require('./package.json').dependencies||{})['@walletconnect/sign-client']?0:1)"
       - name: Install
         working-directory: sample-ts-app
         run: npm install --no-audit --no-fund

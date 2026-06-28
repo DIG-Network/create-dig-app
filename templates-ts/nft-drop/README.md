@@ -28,6 +28,25 @@ collection in `src/mint.ts` — see the spend builder and the "Build a dapp on C
 The dev-shim wallet (in `digstore dev`) cannot sign — open the page in the **DIG Browser** (or
 connect a real wallet) to mint for real.
 
+## Connect to Sage in a normal browser (WalletConnect)
+
+Outside the DIG Browser there is no injected `window.chia`, so a visitor connects **Sage** (the main
+Chia wallet) over **WalletConnect**. This needs a free **project id**:
+
+1. Get one at **<https://cloud.reown.com>** (Reown, formerly WalletConnect Cloud).
+2. Copy `.env.example` to `.env` and set it:
+
+   ```sh
+   cp .env.example .env
+   # .env
+   VITE_WALLETCONNECT_PROJECT_ID=your_project_id_here
+   ```
+
+`@walletconnect/sign-client` is already a dependency, so once `VITE_WALLETCONNECT_PROJECT_ID` is set,
+**Connect wallet to mint** shows a pairing link/QR to approve in Sage and then displays the connected
+address. Leave it blank to support only the injected DIG Browser wallet. (Never commit `.env` — only
+the placeholder `.env.example` is tracked. The env is typed in `src/vite-env.d.ts`.)
+
 ## Develop
 
 ```sh

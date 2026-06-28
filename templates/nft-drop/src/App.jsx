@@ -6,15 +6,23 @@ export default function App() {
   const [address, setAddress] = useState("");
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
+  // The WalletConnect pairing URI (only set during the WC → Sage fallback) — show it as a copy-link
+  // / QR / deep link so the visitor can approve in Sage.
+  const [wcUri, setWcUri] = useState("");
 
   async function onConnect() {
     setError("");
+    setWcUri("");
     try {
-      const p = await connectWallet();
+      // Injected window.chia when present (DIG Browser / extension); otherwise WalletConnect → Sage.
+      // `onUri` fires only on the WC path, with the pairing URI to render.
+      const p = await connectWallet({ onUri: (uri) => setWcUri(uri) });
       setProvider(p);
       setAddress(await p.getAddress());
     } catch (e) {
       setError(e?.message ?? String(e));
+    } finally {
+      setWcUri(""); // pairing complete (or failed) — drop the URI
     }
   }
 
@@ -60,6 +68,16 @@ export default function App() {
         </div>
       ) : (
         <button onClick={onConnect}>Connect wallet to mint</button>
+      )}
+
+      {wcUri && (
+        <div className="card">
+          <p className="muted">
+            Scan or open this in <strong>Sage</strong> to connect (WalletConnect):
+          </p>
+          <code>{wcUri}</code>
+          <button onClick={() => navigator.clipboard?.writeText(wcUri)}>Copy pairing link</button>
+        </div>
       )}
 
       {error && <p className="error">{error}</p>}

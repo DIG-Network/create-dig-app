@@ -179,6 +179,98 @@ test("static template does NOT pull in the SDK (keep it dependency-light)", () =
 });
 
 // ---------------------------------------------------------------------------
+// WalletConnect → Sage fallback — wallet templates must scaffold the WC path so a
+// dapp connects to Sage in a normal browser (not just the injected DIG Browser wallet).
+// ---------------------------------------------------------------------------
+
+// The wallet templates and the env var the WC fallback reads (both are Vite apps).
+const WALLET_TEMPLATES = ["dapp-window-chia", "nft-drop"];
+const WC_ENV_VAR = "VITE_WALLETCONNECT_PROJECT_ID";
+
+test("wallet templates depend on @walletconnect/sign-client (the SDK's WC peer dep)", () => {
+  for (const name of WALLET_TEMPLATES) {
+    const root = freshDir();
+    try {
+      const dest = join(root, "app");
+      scaffold({ appName: "wallet app", template: name, targetDir: dest });
+      const pkg = JSON.parse(read(dest, "package.json"));
+      const dep = (pkg.dependencies || {})["@walletconnect/sign-client"];
+      assert.ok(dep, `${name} depends on @walletconnect/sign-client so the WC→Sage fallback works`);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }
+});
+
+test("wallet templates ship a .env.example with the WalletConnect projectId placeholder", () => {
+  for (const name of WALLET_TEMPLATES) {
+    const root = freshDir();
+    try {
+      const dest = join(root, "app");
+      scaffold({ appName: "wallet app", template: name, targetDir: dest });
+      assert.ok(existsSync(join(dest, ".env.example")), `${name} ships .env.example`);
+      const env = read(dest, ".env.example");
+      assert.match(env, new RegExp(`^${WC_ENV_VAR}=`, "m"), `${name} .env.example sets ${WC_ENV_VAR}`);
+      // Placeholder only — never a real projectId committed in the template.
+      assert.doesNotMatch(env, /__[A-Z_]+__/, "no leftover placeholders in .env.example");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }
+});
+
+test("wallet templates read the WC projectId from the VITE_ env (no hardcoded id)", () => {
+  for (const name of WALLET_TEMPLATES) {
+    const root = freshDir();
+    try {
+      const dest = join(root, "app");
+      scaffold({ appName: "wallet app", template: name, targetDir: dest });
+      // The wallet wiring reads the projectId from import.meta.env.VITE_WALLETCONNECT_PROJECT_ID.
+      assert.ok(
+        grepTree(dest, `import.meta.env.${WC_ENV_VAR}`),
+        `${name} reads ${WC_ENV_VAR} from import.meta.env`,
+      );
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }
+});
+
+test("wallet templates wire ChiaProvider in auto mode with WalletConnect→Sage", () => {
+  for (const name of WALLET_TEMPLATES) {
+    const root = freshDir();
+    try {
+      const dest = join(root, "app");
+      scaffold({ appName: "wallet app", template: name, targetDir: dest });
+      // auto mode = prefer injected window.chia, fall back to WalletConnect → Sage.
+      assert.ok(grepTree(dest, `mode: "auto"`), `${name} uses ChiaProvider auto mode`);
+      // The walletConnect options drive the SDK's WalletConnectTransport (projectId + metadata).
+      assert.ok(grepTree(dest, "walletConnect"), `${name} passes walletConnect options`);
+      assert.ok(grepTree(dest, "projectId"), `${name} passes a projectId`);
+      // The pairing URI hook is wired so the WC fallback can show a QR / deep link to Sage.
+      assert.ok(grepTree(dest, "onUri"), `${name} wires the onUri pairing hook`);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }
+});
+
+test("wallet README documents the WalletConnect projectId (Reown / WalletConnect Cloud)", () => {
+  for (const name of WALLET_TEMPLATES) {
+    const root = freshDir();
+    try {
+      const dest = join(root, "app");
+      scaffold({ appName: "wallet app", template: name, targetDir: dest });
+      const readme = read(dest, "README.md");
+      assert.match(readme, new RegExp(WC_ENV_VAR), `${name} README names ${WC_ENV_VAR}`);
+      assert.match(readme, /reown|walletconnect cloud/i, `${name} README points at Reown / WalletConnect Cloud`);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }
+});
+
+// ---------------------------------------------------------------------------
 // "Free until publish" framing must be in the scaffolded README + next-steps
 // ---------------------------------------------------------------------------
 

@@ -8,30 +8,48 @@
 // @dignetwork/dig-sdk ships its own .d.ts types, so ChiaProvider, ConnectOptions, and
 // WalletConnectOptions are all fully typed — no `@types/*` package is needed for the SDK.
 
-import { ChiaProvider, type ConnectOptions } from "@dignetwork/dig-sdk";
+import {
+  ChiaProvider,
+  type ConnectOptions,
+  type WalletConnectOptions,
+} from "@dignetwork/dig-sdk";
+
+// WalletConnect Cloud / Reown project id, read from the build-time env (see .env.example) and typed
+// via src/vite-env.d.ts. When set, it enables the WalletConnect → Sage fallback so visitors without
+// the injected DIG wallet can still connect Sage (the main Chia wallet) in a normal browser. Get a
+// free id at https://cloud.reown.com (formerly WalletConnect Cloud).
+const WALLETCONNECT_PROJECT_ID = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID ?? "";
+
+/** Hooks for the connect flow (e.g. render the WalletConnect pairing URI as a QR / copy-link). */
+export interface ConnectHooks {
+  onUri?: (uri: string) => void;
+}
 
 /**
- * Connect a wallet for the drop. Prefers the injected DIG Browser wallet (window.chia), falls back
- * to WalletConnect → Sage when a project id is configured.
+ * Connect a wallet for the drop. `mode: "auto"` prefers the injected DIG Browser wallet
+ * (window.chia) and falls back to WalletConnect → Sage when a project id is configured (the SDK
+ * drives its `WalletConnectTransport` under the hood — we never hand-roll WC).
  */
-export async function connectWallet(): Promise<ChiaProvider> {
-  // Set a WalletConnect Cloud project id (https://cloud.walletconnect.com) to enable the fallback,
-  // and `npm i @walletconnect/sign-client`.
-  const WALLETCONNECT_PROJECT_ID = "";
+export async function connectWallet(hooks: ConnectHooks = {}): Promise<ChiaProvider> {
+  // The typed WalletConnect options the SDK's WalletConnectTransport consumes (projectId + metadata
+  // + the pairing-URI hook + the Chia chain). Only built when a project id is configured.
+  const walletConnect: WalletConnectOptions | undefined = WALLETCONNECT_PROJECT_ID
+    ? {
+        projectId: WALLETCONNECT_PROJECT_ID,
+        metadata: {
+          name: "__DISPLAY_NAME__",
+          description: "An NFT drop built with create-dig-app",
+          url: typeof window !== "undefined" ? window.location.origin : "https://example.dig",
+          icons: [],
+        },
+        onUri: hooks.onUri, // render this URI as a QR / copy-link for the Sage fallback
+      }
+    : undefined;
 
   const options: ConnectOptions = {
-    mode: "auto",
-    walletConnect: WALLETCONNECT_PROJECT_ID
-      ? {
-          projectId: WALLETCONNECT_PROJECT_ID,
-          metadata: {
-            name: "__DISPLAY_NAME__",
-            description: "An NFT drop built with create-dig-app",
-            url: typeof window !== "undefined" ? window.location.origin : "https://example.dig",
-            icons: [],
-          },
-        }
-      : undefined,
+    mode: "auto", // prefer injected window.chia; fall back to WalletConnect → Sage if configured
+    chain: "chia:mainnet", // CAIP-2 chain the SDK expects (Chia mainnet)
+    walletConnect,
   };
   return ChiaProvider.connect(options);
 }
