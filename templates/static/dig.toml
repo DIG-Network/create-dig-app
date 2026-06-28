@@ -1,0 +1,19 @@
+# dig.toml — the project manifest digstore (and the DIG SDK adapters) read.
+# Keys are kebab-case (snake_case also accepted). See:
+#   https://docs.dig.net/digstore/cli/deploy-from-github-actions
+#
+# Everything here is LOCAL config. Scaffolding, building, and `digstore dev` cost nothing —
+# you only spend the flat 100 DIG when you run `digstore deploy` to publish a capsule.
+
+# The built output digstore publishes as your site. For this template the "build" just copies
+# src/ into public/, so the content root is the build output.
+output-dir = "__OUTPUT_DIR__"
+
+# The command digstore runs to (re)build before publishing — used by `digstore deploy` / CI.
+build-command = "__BUILD_COMMAND__"
+
+# The default remote a `digstore deploy` pushes to. `origin` resolves to your store once it exists
+# (after your first publish / `digstore init`). Until then, deploy/dev work locally with no chain.
+remote = "origin"
+
+# network = "mainnet"   # the only network today; shown for completeness

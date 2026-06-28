@@ -1,0 +1,16 @@
+{
+  "name": "__APP_NAME__",
+  "version": "0.0.0",
+  "private": true,
+  "description": "__DISPLAY_NAME__ — a Next.js static-export site on the DIG Network.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^14.2.15",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
