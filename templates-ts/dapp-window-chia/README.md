@@ -47,7 +47,7 @@ npm install
 npm run dev            # Vite dev server at http://localhost:5173
 npm run typecheck      # tsc --noEmit (type-check without building)
 npm run build          # tsc --noEmit && vite build -> dist/ (your content root)
-digstore dev           # preview on the real dig:// read path + dev wallet shim — FREE, no spend
+digstore dev           # preview on the real chia:// read path + dev wallet shim — FREE, no spend
 ```
 
 ## Publish (this is the only step that spends $DIG)

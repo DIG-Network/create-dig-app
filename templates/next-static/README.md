@@ -20,7 +20,7 @@ capsule with `digstore deploy`. *Iterate for free, publish when it's ready.*
 npm install
 npm run dev            # Next dev server at http://localhost:3000
 npm run build          # static export -> out/ (your content root)
-digstore dev           # preview on the real dig:// read path — FREE, no chain, no spend
+digstore dev           # preview on the real chia:// read path — FREE, no chain, no spend
 ```
 
 ## Publish (this is the only step that spends $DIG)

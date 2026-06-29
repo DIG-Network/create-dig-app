@@ -5,6 +5,6 @@
   "description": "__DISPLAY_NAME__ — a static site on the DIG Network.",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "dev": "node scripts/build.mjs && echo \"Built to __OUTPUT_DIR__/ — run 'digstore dev' to preview on the real dig:// read path (free).\""
+    "dev": "node scripts/build.mjs && echo \"Built to __OUTPUT_DIR__/ — run 'digstore dev' to preview on the real chia:// read path (free).\""
   }
 }
