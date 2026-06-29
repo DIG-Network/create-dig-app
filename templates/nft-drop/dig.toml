@@ -1,9 +1,9 @@
 # dig.toml — the project manifest digstore (and the DIG SDK adapters) read.
 # Keys are kebab-case (snake_case also accepted). See:
-#   https://docs.dig.net/digstore/cli/deploy-from-github-actions
+#   https://docs.dig.net/docs/digstore/cli/deploy-from-github-actions
 #
 # Everything here is LOCAL config. Scaffolding, building, and `digstore dev` cost nothing —
-# you only spend the flat 100 DIG when you run `digstore deploy` to publish the mint PAGE as a
+# you only spend $DIG when you run `digstore deploy` to publish the mint PAGE as a
 # capsule. (Minting the NFTs themselves is a separate, wallet-signed on-chain action — see README.)
 
 # Vite emits the production build to dist/ — the content root digstore publishes.

@@ -10,7 +10,7 @@ Scaffolded with `npm create dig-app` (template: `dapp-window-chia`, language: Ty
 ## Free until publish
 
 Scaffolding, building, previewing, and connecting a wallet cost **nothing**. There is **no mint, no
-chain, and no spend** when you create or run this project — you only spend a flat **100 DIG** the
+chain, and no spend** when you create or run this project — you only spend **$DIG** the
 moment you publish a capsule with `digstore deploy`. *Iterate for free, publish when it's ready.*
 
 ## How the wallet is wired
@@ -50,16 +50,16 @@ npm run build          # tsc --noEmit && vite build -> dist/ (your content root)
 digstore dev           # preview on the real dig:// read path + dev wallet shim — FREE, no spend
 ```
 
-## Publish (this is the only step that spends DIG)
+## Publish (this is the only step that spends $DIG)
 
 ```sh
-digstore deploy        # build + publish a capsule (100 DIG + a small XCH fee)
+digstore deploy        # build + publish a capsule ($DIG + a small XCH fee)
 ```
 
 ## Deploy from CI
 
 Wire up push-to-deploy with the GitHub Action:
-<https://docs.dig.net/digstore/cli/deploy-from-github-actions>.
+<https://docs.dig.net/docs/digstore/cli/deploy-from-github-actions>.
 
 ## Config
 

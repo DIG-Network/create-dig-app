@@ -1,7 +1,11 @@
 # create-dig-app
 
 Scaffold a wallet-wired, deployable **DIG Network** app — **free, no mint**. The JS front door for
-building dapps, frontends, and NFT collections on Chia (the companion to the Rust `digstore new`).
+building dapps, frontends, and NFT collections on Chia.
+
+> **Prefer Rust?** [`digstore new`](https://docs.dig.net/docs/digstore/cli/new) scaffolds the same
+> starters from the CLI — `create-dig-app` and `digstore new` are the two front doors to the same
+> templates (the `static-site` / `vite-react` / … ids match).
 
 ```sh
 npm create dig-app@latest my-app -- --template vite-react
@@ -33,25 +37,29 @@ The wallet templates use [`@dignetwork/dig-sdk`](https://github.com/DIG-Network/
 types** — `ChiaProvider`, `ConnectOptions`, and friends are fully typed straight from the package's
 `.d.ts`, so no `@types/*` shim is needed for the SDK.
 
-> The `static` template has no build step (it just copies `src/` → `public/`), so it has no
+> The `static-site` template has no build step (it just copies `src/` → `public/`), so it has no
 > TypeScript variant — requesting `--typescript` for it scaffolds JavaScript and tells you so.
+> (The legacy id `static` still works as a hidden alias.)
 
 ## Free until publish
 
 **Scaffolding, building, and previewing cost nothing.** Creating a project does **not** mint,
-touch the chain, or spend any funds. You spend a flat **100 DIG** only when you publish a capsule
-with `digstore deploy`. *Iterate for free, publish when it's ready.*
+touch the chain, or spend any funds. You spend **$DIG** only when you publish a **capsule** with
+`digstore deploy`. *Iterate for free, publish when it's ready.*
 
 ```sh
 digstore dev      # preview on the real dig:// read path — FREE, no chain, no spend
-digstore deploy   # publish a capsule when you're ready (the only step that spends 100 DIG)
+digstore deploy   # publish a capsule when you're ready (the only step that spends $DIG)
 ```
+
+A published app lives on **DIGHUb** at `hub.dig.net/stores/<id>`, and you can optionally register a
+human name so it is also reachable at `<your-name>.on.dig.net` (a pay-to-register domain).
 
 ## Templates
 
 | Template | What you get | Wallet wired | Languages |
 |---|---|---|---|
-| `static` | Plain HTML/CSS/JS — zero build step, the lightest way to ship a site. | — | JS |
+| `static-site` | Plain HTML/CSS/JS — zero build step, the lightest way to ship a site. | — | JS |
 | `vite-react` | A React SPA built with Vite — the fast default for an app frontend. | — | JS · TS |
 | `next-static` | Next.js exported to static files (`output: 'export'`), deployable as a capsule. | — | JS · TS |
 | `nft-drop` | A wallet-connected NFT mint page (`ChiaProvider` + the canonical CHIP-0035 spend builder). | yes | JS · TS |
@@ -107,10 +115,13 @@ npm create dig-app@latest -- --help
 | Option | Description |
 |---|---|
 | `<name>` | Project directory + npm package name (slugified to be npm-safe). |
-| `-t, --template <t>` | One of: `static`, `vite-react`, `next-static`, `nft-drop`, `dapp-window-chia`. |
+| `-t, --template <t>` | One of: `static-site`, `vite-react`, `next-static`, `nft-drop`, `dapp-window-chia`. |
 | `--typescript`, `--ts` | Scaffold the TypeScript variant (where available). |
 | `--javascript`, `--js` | Scaffold the JavaScript variant (the default). |
 | `--lang <js\|ts>` | Same as the language flags above. |
+| `--json` | Emit one structured result object on stdout; route human prose to stderr (for scripts/agents). |
+| `--list-templates` | List the available templates (pair with `--json` for machine-readable output). |
+| `--help-json` | Print the full flag/template tree + exit-code table as JSON. |
 | `-h, --help` | Show usage and the template list. |
 | `-v, --version` | Print the version. |
 
@@ -133,13 +144,57 @@ Every project includes:
 
 Preview locally for free with `digstore dev`, publish with `digstore deploy`, and wire
 push-to-deploy in CI with the GitHub deploy Action so every push to `main` publishes a new capsule:
-[Deploy from GitHub Actions](https://docs.dig.net/digstore/cli/deploy-from-github-actions).
+[Deploy from GitHub Actions](https://docs.dig.net/docs/digstore/cli/deploy-from-github-actions).
+Your app is then live on **DIGHUb** (`hub.dig.net/stores/<id>`) and, if you register one, at
+`<your-name>.on.dig.net`.
+
+## Scripting / agents (machine-readable output)
+
+`create-dig-app` is scriptable end-to-end. Pass `--json` to get a single structured object on
+**stdout** (all human prose is routed to **stderr**, and no interactive prompts are shown — so an
+agent can scaffold unattended):
+
+```sh
+# Scaffold and capture the result as JSON.
+npx create-dig-app my-app --template vite-react --json
+# → {"schemaVersion":1,"ok":true,"result":{"appName":"my-app","template":"vite-react",
+#     "lang":"js","requestedLang":"js","targetDir":"…/my-app","nextSteps":[…]}}
+
+# Discover the templates as data, or the full invocation contract:
+npx create-dig-app --list-templates --json
+npx create-dig-app --help-json        # flags + template tree + the exit-code table
+```
+
+On failure, `--json` emits a structured error envelope with a **stable, UPPER_SNAKE code** (never
+derived from the prose), the matching exit code, and an actionable hint:
+
+```json
+{"schemaVersion":1,"ok":false,"error":{"code":"UNKNOWN_TEMPLATE","exit_code":3,
+  "message":"Unknown template \"svelte\". Available: …","hint":"Run with --list-templates …",
+  "template":"svelte"}}
+```
+
+### Exit codes
+
+A differentiated, stable exit-code table (also emitted by `--help-json`) so a script can branch on
+the *kind* of failure:
+
+| Code | Meaning |
+|---|---|
+| `0` | success |
+| `1` | unexpected internal error |
+| `2` | usage error (bad/unknown option or malformed arguments) |
+| `3` | unknown template id |
+| `4` | target directory exists and is not empty |
+| `5` | required arguments missing in non-interactive mode |
+| `6` | bundled template files are missing (packaging bug) |
+| `7` | app name is not usable |
 
 ## Develop on create-dig-app
 
 ```sh
 node --test test/         # run the test suite (no install needed)
-node bin/create-dig-app.js my-app --template static   # run the CLI locally
+node bin/create-dig-app.js my-app --template static-site   # run the CLI locally
 ```
 
 ## License

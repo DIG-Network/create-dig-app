@@ -18,6 +18,7 @@ import {
   TEMPLATES,
   templateNames,
   resolveTemplate,
+  canonicalTemplateName,
   normalizeAppName,
   SDK_VERSION,
   UnknownTemplateError,
@@ -43,9 +44,30 @@ test("exposes the five committed templates", () => {
     "dapp-window-chia",
     "next-static",
     "nft-drop",
-    "static",
+    "static-site",
     "vite-react",
   ].sort());
+});
+
+test("the legacy `static` id is a hidden alias for `static-site` (back-compat)", () => {
+  // The alias resolves to the canonical template…
+  assert.equal(resolveTemplate("static").name, "static-site");
+  assert.equal(resolveTemplate("static-site").name, "static-site");
+  assert.equal(canonicalTemplateName("static"), "static-site");
+  // …but is NOT advertised in the public template list (the picker/help show only canonical names).
+  assert.ok(!templateNames().includes("static"), "alias is hidden from templateNames()");
+});
+
+test("scaffolding via the legacy `static` alias produces the static-site project", () => {
+  const root = freshDir();
+  try {
+    const dest = join(root, "app");
+    const result = scaffold({ appName: "App", template: "static", targetDir: dest });
+    assert.equal(result.template, "static-site", "alias scaffolds the canonical template");
+    assert.ok(existsSync(join(dest, "dig.toml")), "scaffolded a real project");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test("every template has a description and an output dir", () => {
@@ -57,7 +79,7 @@ test("every template has a description and an output dir", () => {
 });
 
 test("resolveTemplate accepts a known template and rejects an unknown one", () => {
-  assert.equal(resolveTemplate("static").name, "static");
+  assert.equal(resolveTemplate("static-site").name, "static-site");
   assert.throws(() => resolveTemplate("svelte-thing"), UnknownTemplateError);
   assert.throws(() => resolveTemplate(""), UnknownTemplateError);
 });
@@ -87,7 +109,7 @@ test("normalizeAppName rejects empty / dot names", () => {
 // ---------------------------------------------------------------------------
 
 for (const name of [
-  "static",
+  "static-site",
   "vite-react",
   "next-static",
   "nft-drop",
@@ -166,13 +188,13 @@ test("dapp + nft templates depend on @dignetwork/dig-sdk at the pinned version",
   }
 });
 
-test("static template does NOT pull in the SDK (keep it dependency-light)", () => {
+test("static-site template does NOT pull in the SDK (keep it dependency-light)", () => {
   const root = freshDir();
   try {
     const dest = join(root, "site");
-    scaffold({ appName: "plain site", template: "static", targetDir: dest });
+    scaffold({ appName: "plain site", template: "static-site", targetDir: dest });
     const pkg = JSON.parse(read(dest, "package.json"));
-    assert.ok(!(pkg.dependencies || {})["@dignetwork/dig-sdk"], "static has no SDK dep");
+    assert.ok(!(pkg.dependencies || {})["@dignetwork/dig-sdk"], "static-site has no SDK dep");
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -292,7 +314,7 @@ test("nextSteps output names the no-mint/no-spend guarantee", () => {
   const root = freshDir();
   try {
     const dest = join(root, "app");
-    const result = scaffold({ appName: "app", template: "static", targetDir: dest });
+    const result = scaffold({ appName: "app", template: "static-site", targetDir: dest });
     const steps = result.nextSteps.join("\n").toLowerCase();
     assert.match(steps, /digstore dev/);
     assert.match(steps, /digstore deploy/);
@@ -312,7 +334,7 @@ test("scaffold refuses a non-empty target dir", () => {
     const dest = join(root, "occupied");
     mkdirSync(dest, { recursive: true });
     writeFileSync(join(dest, "keep.txt"), "hi");
-    assert.throws(() => scaffold({ appName: "x", template: "static", targetDir: dest }), /not empty|exists/i);
+    assert.throws(() => scaffold({ appName: "x", template: "static-site", targetDir: dest }), /not empty|exists/i);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
