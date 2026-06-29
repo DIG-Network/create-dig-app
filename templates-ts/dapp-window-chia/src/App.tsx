@@ -51,7 +51,7 @@ export default function App() {
       </p>
       <p className="muted">
         Connecting and previewing are <strong>free</strong>. There is no mint, no chain, and no spend
-        here — you only spend 100 DIG when you publish with <code>digstore deploy</code>.
+        here — you only spend $DIG when you publish with <code>digstore deploy</code>.
       </p>
 
       {address ? (
@@ -86,7 +86,7 @@ export default function App() {
 
       <pre>
         <code>{`digstore dev      # preview + dev wallet shim, free
-digstore deploy   # publish a capsule (100 DIG)`}</code>
+digstore deploy   # publish a capsule ($DIG)`}</code>
       </pre>
     </main>
   );

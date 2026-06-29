@@ -12,7 +12,7 @@ Scaffolded with `npm create dig-app` (template: `nft-drop`, language: TypeScript
 Scaffolding this template **did not mint anything, touch the chain, or spend funds.** Building and
 previewing the mint page are **free**. Two distinct costs come later, both explicit:
 
-- **Publishing the page** as a DIG capsule is one `digstore deploy` — a flat **100 DIG**.
+- **Publishing the page** as a DIG capsule is one `digstore deploy` — **$DIG**.
 - **Minting the NFTs** is a separate, wallet-signed on-chain action a visitor triggers (it spends
   the visitor's funds). The spend is **built with the SDK** and signed by the wallet — never
   hand-rolled.
@@ -23,7 +23,7 @@ previewing the mint page are **free**. Two distinct costs come later, both expli
 DIG Browser wallet, falls back to WalletConnect → Sage) and shows the shape of a real mint: build
 coin spends with `@dignetwork/dig-sdk/spend`, then `provider.signCoinSpends(...)`. Wire your
 collection in `src/mint.ts` — see the spend builder and the "Build a dapp on Chia" tutorial:
-<https://github.com/DIG-Network/dig-sdk> · <https://docs.dig.net/build-a-dapp>.
+<https://github.com/DIG-Network/dig-sdk> · <https://docs.dig.net/docs/build-a-dapp>.
 
 The dev-shim wallet (in `digstore dev`) cannot sign — open the page in the **DIG Browser** (or
 connect a real wallet) to mint for real.
@@ -57,16 +57,16 @@ npm run build          # tsc --noEmit && vite build -> dist/ (your content root)
 digstore dev           # preview on the real dig:// read path + dev wallet shim — FREE, no spend
 ```
 
-## Publish the mint page (this is the only step that spends DIG)
+## Publish the mint page (this is the only step that spends $DIG)
 
 ```sh
-digstore deploy        # build + publish a capsule (100 DIG + a small XCH fee)
+digstore deploy        # build + publish a capsule ($DIG + a small XCH fee)
 ```
 
 ## Deploy from CI
 
 Wire up push-to-deploy with the GitHub Action:
-<https://docs.dig.net/digstore/cli/deploy-from-github-actions>.
+<https://docs.dig.net/docs/digstore/cli/deploy-from-github-actions>.
 
 ## Config
 

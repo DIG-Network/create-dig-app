@@ -51,7 +51,7 @@ export default function App() {
       </p>
       <p className="muted">
         Building and previewing this mint page are <strong>free</strong> — no mint, no chain, no spend
-        when you scaffold or run it. Publishing the page is one <code>digstore deploy</code> (100 DIG).
+        when you scaffold or run it. Publishing the page is one <code>digstore deploy</code> ($DIG).
         Minting the NFTs is a separate, wallet-signed on-chain action a visitor triggers.
       </p>
 
@@ -86,7 +86,7 @@ export default function App() {
 
       <pre>
         <code>{`digstore dev      # preview the mint page, free
-digstore deploy   # publish the page as a capsule (100 DIG)`}</code>
+digstore deploy   # publish the page as a capsule ($DIG)`}</code>
       </pre>
     </main>
   );

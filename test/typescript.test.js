@@ -69,11 +69,11 @@ test("each TS-capable template advertises lang support for both js and ts", () =
   }
 });
 
-test("the static template is JS-only (no buildable JS to typecheck)", () => {
-  const meta = resolveTemplate("static");
-  assert.ok(Array.isArray(meta.langs), "static has a langs array");
-  assert.ok(meta.langs.includes("js"), "static supports js");
-  assert.ok(!meta.langs.includes("ts"), "static does NOT advertise ts");
+test("the static-site template is JS-only (no buildable JS to typecheck)", () => {
+  const meta = resolveTemplate("static-site");
+  assert.ok(Array.isArray(meta.langs), "static-site has a langs array");
+  assert.ok(meta.langs.includes("js"), "static-site supports js");
+  assert.ok(!meta.langs.includes("ts"), "static-site does NOT advertise ts");
 });
 
 // ---------------------------------------------------------------------------
@@ -267,14 +267,14 @@ test("lang defaults to js and the JS path is unchanged (no tsconfig, .jsx source
   }
 });
 
-test("requesting ts for a JS-only template (static) falls back to js with a noted lang", () => {
+test("requesting ts for a JS-only template (static-site) falls back to js with a noted lang", () => {
   const root = freshDir();
   try {
     const dest = join(root, "site");
-    const result = scaffold({ appName: "site", template: "static", lang: "ts", targetDir: dest });
-    // static has no TS variant — it scaffolds as JS and reports lang=js so callers can tell the user.
-    assert.equal(result.lang, "js", "static stays js even when ts requested");
-    assert.ok(!existsSync(join(dest, "tsconfig.json")), "static has no tsconfig");
+    const result = scaffold({ appName: "site", template: "static-site", lang: "ts", targetDir: dest });
+    // static-site has no TS variant — it scaffolds as JS and reports lang=js so callers can tell.
+    assert.equal(result.lang, "js", "static-site stays js even when ts requested");
+    assert.ok(!existsSync(join(dest, "tsconfig.json")), "static-site has no tsconfig");
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
