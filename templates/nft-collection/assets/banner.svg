@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="350" viewBox="0 0 1400 350" role="img" aria-label="Collection banner placeholder">
+  <defs>
+    <linearGradient id="dig" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5800D6"/>
+      <stop offset="1" stop-color="#FF00DE"/>
+    </linearGradient>
+  </defs>
+  <rect width="1400" height="350" fill="url(#dig)"/>
+  <text x="50%" y="48%" text-anchor="middle" fill="#ffffff" font-family="'Space Grotesk', system-ui, sans-serif" font-size="56" font-weight="700">Your collection banner</text>
+  <text x="50%" y="64%" text-anchor="middle" fill="#ffffff" opacity="0.85" font-family="'Space Grotesk', system-ui, sans-serif" font-size="24">Replace assets/banner.svg — shown on the collection page</text>
+</svg>

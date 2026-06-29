@@ -1,0 +1,5 @@
+# WalletConnect Cloud / Reown project id — used by src/mint.js to connect Sage (the main Chia wallet)
+# over WalletConnect when you mint outside the DIG Browser. Get a free id at https://cloud.reown.com
+# (formerly WalletConnect Cloud). Copy this file to `.env` and paste your id. Leave it blank to use
+# only the injected DIG Browser wallet (window.chia). Minting via the `digstore` CLI does not need it.
+WALLETCONNECT_PROJECT_ID=

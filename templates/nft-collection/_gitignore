@@ -1,0 +1,9 @@
+node_modules/
+.dig/
+.DS_Store
+*.log
+
+# Local env (e.g. your WalletConnect projectId) — never commit secrets; .env.example is committed.
+.env
+.env.local
+.env.*.local

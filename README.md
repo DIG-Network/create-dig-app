@@ -63,7 +63,15 @@ human name so it is also reachable at `<your-name>.on.dig.net` (a pay-to-registe
 | `vite-react` | A React SPA built with Vite — the fast default for an app frontend. | — | JS · TS |
 | `next-static` | Next.js exported to static files (`output: 'export'`), deployable as a capsule. | — | JS · TS |
 | `nft-drop` | A wallet-connected NFT mint page (`ChiaProvider` + the canonical CHIP-0035 spend builder). | yes | JS · TS |
+| `nft-collection` | An NFT collection workspace — art + CHIP-0007 metadata/license tooling for `digstore collection mint`. | yes | JS |
 | `dapp-window-chia` | A dapp wired to a Chia wallet via `ChiaProvider` — injected `window.chia`, or Sage over WalletConnect. | yes | JS · TS |
+
+The **`nft-collection`** template is a *collection workspace*, not a single page: drop your art in
+`images/`, describe the set once in `collection.json`, and its dependency-free tooling
+(`npm run generate` / `npm run validate`) emits the canonical **CHIP-0007** metadata + the
+`items.json` manifest that `digstore collection mint` consumes — byte-for-byte the same shape the
+DIGHUb NFT studio mints, so a collection built here mints cleanly either way. New to minting on DIG?
+See <https://docs.dig.net/docs/audiences/nft-developers>.
 
 The wallet templates wire [`@dignetwork/dig-sdk`](https://github.com/DIG-Network/dig-sdk): a Chia
 wallet your dapp gets for free. `ChiaProvider.connect({ mode: "auto" })` **prefers the injected DIG
@@ -115,7 +123,7 @@ npm create dig-app@latest -- --help
 | Option | Description |
 |---|---|
 | `<name>` | Project directory + npm package name (slugified to be npm-safe). |
-| `-t, --template <t>` | One of: `static-site`, `vite-react`, `next-static`, `nft-drop`, `dapp-window-chia`. |
+| `-t, --template <t>` | One of: `static-site`, `vite-react`, `next-static`, `nft-drop`, `nft-collection`, `dapp-window-chia`. |
 | `--typescript`, `--ts` | Scaffold the TypeScript variant (where available). |
 | `--javascript`, `--js` | Scaffold the JavaScript variant (the default). |
 | `--lang <js\|ts>` | Same as the language flags above. |
