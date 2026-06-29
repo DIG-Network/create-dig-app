@@ -47,8 +47,11 @@ function treeText(dir) {
 }
 
 // The §21 remote-transport locator `dig://<host>/<store_id>` and the `urn:dig:` namespace are
-// EXEMPT from the user-facing rename (they are wire/developer contracts). Neither appears in these
-// starters today, so the guard can be a blanket "no user-facing dig:// in scaffolded output".
+// EXEMPT from the user-facing rename (they are wire/developer contracts). The CHIP-0007 NFT metadata
+// canonically addresses capsule resources by the URN form `dig://urn:dig:chia:<storeId>[:<root>]/…`
+// (byte-mirror of the hub + digstore metadata builders) — that exact, EXEMPT prefix is the only
+// `dig://` the starters may contain. Strip it, then assert no OTHER (user-facing) `dig://` remains.
+const EXEMPT_DIG_URI = /dig:\/\/urn:dig:/g;
 
 // ---------------------------------------------------------------------------
 // chia:// content scheme — scaffolded output (the user-facing read path)
@@ -64,8 +67,8 @@ for (const name of templateNames()) {
       try {
         const dest = join(root, "app");
         scaffold({ appName: "Brand App", template: name, lang, targetDir: dest });
-        const text = treeText(dest);
-        assert.doesNotMatch(text, /dig:\/\//, "no user-facing dig:// in scaffolded files");
+        const text = treeText(dest).replace(EXEMPT_DIG_URI, "");
+        assert.doesNotMatch(text, /dig:\/\//, "no user-facing dig:// in scaffolded files (URN form exempt)");
       } finally {
         rmSync(root, { recursive: true, force: true });
       }

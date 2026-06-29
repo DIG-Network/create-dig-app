@@ -1,0 +1,64 @@
+:root {
+  color-scheme: light dark;
+  --fg: #0f172a;
+  --muted: #64748b;
+  --bg: #f8fafc;
+  --error: #dc2626;
+
+  /* DIG brand accent — violet -> magenta (SYSTEM.md visual theme; matches dig.net/hub/status). */
+  --dig-violet: #5800D6;
+  --dig-magenta: #FF00DE;
+  --accent: var(--dig-violet);
+  --grad-brand: linear-gradient(115deg, #5800D6 0%, #FF00DE 100%);
+
+  /* DIG brand fonts — named first, system stack as the offline/no-fetch fallback so a published
+     capsule never depends on an external font host (keeps the collection page self-contained). */
+  --dig-font: "Space Grotesk", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --dig-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --fg: #e2e8f0; --muted: #94a3b8; --bg: #0b1120; }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font: 16px/1.6 var(--dig-font);
+  color: var(--fg);
+  background: var(--bg);
+}
+.banner { width: 100%; max-height: 320px; object-fit: cover; display: block; }
+.wrap { max-width: 64rem; margin: 0 auto; padding: 2rem; }
+h1 {
+  font-size: 2.25rem;
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.muted { color: var(--muted); }
+.error { color: var(--error); }
+button {
+  font: inherit;
+  padding: 0.6rem 1.1rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: var(--grad-brand);
+  color: white;
+  cursor: pointer;
+}
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+.item { border-radius: 0.75rem; overflow: hidden; background: rgba(127, 127, 127, 0.12); }
+.item img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.item .label { padding: 0.5rem 0.75rem; font-weight: 600; }
+code { font-family: var(--dig-mono); word-break: break-all; }
+pre {
+  font-family: var(--dig-mono);
+  margin-top: 1.5rem;
+  background: rgba(127, 127, 127, 0.12);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}

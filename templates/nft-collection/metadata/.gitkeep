@@ -1,0 +1,2 @@
+# Generated CHIP-0007 metadata lands here (one <item>.json per image).
+# Run `npm run generate:metadata`. Do not hand-edit — the on-chain metadata_hash is sha256 of these.

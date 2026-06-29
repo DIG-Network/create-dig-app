@@ -1,0 +1,14 @@
+{
+  "name": "__DISPLAY_NAME__",
+  "description": "A collection minted on the DIG Network — art stored in a chia:// capsule, truly permanent on Chia.",
+  "creator": "__DISPLAY_NAME__ creator",
+  "royalty_address": "xch10000000000000000000000000000000000000000000000000000000000000000",
+  "royalty_basis_points": 300,
+  "did": null,
+  "license": "cc0",
+  "icon": "assets/icon.svg",
+  "banner": "assets/banner.svg",
+  "attributes": [
+    { "trait_type": "Website", "value": "https://example.on.dig.net" }
+  ]
+}
