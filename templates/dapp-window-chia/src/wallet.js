@@ -32,7 +32,7 @@ export async function connectWallet(hooks = {}) {
           metadata: {
             name: "__DISPLAY_NAME__",
             description: "Built with create-dig-app + @dignetwork/dig-sdk",
-            url: typeof window !== "undefined" ? window.location.origin : "https://example.dig",
+            url: typeof window !== "undefined" ? window.location.origin : "https://example.on.dig.net",
             icons: [],
           },
           onUri: hooks.onUri, // render this URI as a QR / copy-link for the Sage fallback
