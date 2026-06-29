@@ -1,0 +1,23 @@
+# dig.toml — the project manifest digstore (and the DIG SDK adapters) read.
+# Keys are kebab-case (snake_case also accepted). See:
+#   https://docs.dig.net/docs/digstore/cli/deploy-from-github-actions
+#
+# Everything here is LOCAL config. Scaffolding, generating metadata/licenses, and validating cost
+# nothing — you only spend $DIG when you publish (`digstore deploy`) or mint (`digstore collection
+# mint`). See the README for the full flow.
+
+# This collection's content root is the project root itself: the art (images/), the generated
+# CHIP-0007 metadata (metadata/), the licenses (licenses/), and the collection icon/banner (assets/)
+# all ship inside ONE capsule, so every `data_uris`/`metadata_uris`/`license_uris` resolves under it.
+output-dir = "__OUTPUT_DIR__"
+
+# `build` runs the validator as a pre-publish gate (schema + data/metadata/license hash agreement).
+build-command = "__BUILD_COMMAND__"
+
+# Default remote a `digstore deploy` pushes to (resolves to your store after your first publish).
+remote = "origin"
+
+# Don't publish the toolchain / local files into the capsule — only the art + metadata + licenses.
+ignore = ["node_modules", "scripts", "package.json", "package-lock.json", ".env", ".env.local", "src"]
+
+# network = "mainnet"

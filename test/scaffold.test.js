@@ -38,11 +38,12 @@ function read(dir, ...parts) {
 // Template registry / metadata
 // ---------------------------------------------------------------------------
 
-test("exposes the five committed templates", () => {
+test("exposes the six committed templates", () => {
   const names = templateNames().sort();
   assert.deepEqual(names, [
     "dapp-window-chia",
     "next-static",
+    "nft-collection",
     "nft-drop",
     "static-site",
     "vite-react",
@@ -113,6 +114,7 @@ for (const name of [
   "vite-react",
   "next-static",
   "nft-drop",
+  "nft-collection",
   "dapp-window-chia",
 ]) {
   test(`scaffold(${name}) writes a runnable project tree`, () => {
@@ -169,7 +171,7 @@ function assertNoPlaceholders(dir) {
 // ---------------------------------------------------------------------------
 
 test("dapp + nft templates depend on @dignetwork/dig-sdk at the pinned version", () => {
-  for (const name of ["dapp-window-chia", "nft-drop"]) {
+  for (const name of ["dapp-window-chia", "nft-drop", "nft-collection"]) {
     const root = freshDir();
     try {
       const dest = join(root, "app");

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Sample item 1">
+  <rect width="512" height="512" fill="#5800D6"/>
+  <circle cx="256" cy="220" r="120" fill="#FF00DE"/>
+  <text x="50%" y="86%" text-anchor="middle" fill="#ffffff" font-family="'Space Grotesk', system-ui, sans-serif" font-size="40" font-weight="700">Item #1</text>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320" role="img" aria-label="Collection icon placeholder">
+  <defs>
+    <linearGradient id="dig" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5800D6"/>
+      <stop offset="1" stop-color="#FF00DE"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="320" rx="64" fill="url(#dig)"/>
+  <text x="50%" y="56%" text-anchor="middle" fill="#ffffff" font-family="'Space Grotesk', system-ui, sans-serif" font-size="120" font-weight="700">D</text>
+</svg>

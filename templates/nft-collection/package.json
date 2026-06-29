@@ -1,0 +1,18 @@
+{
+  "name": "__APP_NAME__",
+  "version": "0.0.0",
+  "private": true,
+  "description": "__DISPLAY_NAME__ — an NFT collection on the DIG Network (CHIP-0007 metadata + licenses).",
+  "type": "module",
+  "scripts": {
+    "generate:license": "node scripts/dig-nft.mjs license",
+    "generate:metadata": "node scripts/dig-nft.mjs metadata",
+    "generate": "npm run generate:license && npm run generate:metadata",
+    "validate": "node scripts/dig-nft.mjs validate",
+    "build": "npm run validate"
+  },
+  "dependencies": {
+    "@dignetwork/dig-sdk": "__SDK_VERSION__",
+    "@walletconnect/sign-client": "^2.11.0"
+  }
+}
