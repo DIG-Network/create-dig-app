@@ -31,7 +31,7 @@ export async function connectWallet(hooks = {}) {
           metadata: {
             name: "__DISPLAY_NAME__",
             description: "An NFT drop built with create-dig-app",
-            url: typeof window !== "undefined" ? window.location.origin : "https://example.dig",
+            url: typeof window !== "undefined" ? window.location.origin : "https://example.on.dig.net",
             icons: [],
           },
           onUri: hooks.onUri, // render this URI as a QR / copy-link for the Sage fallback

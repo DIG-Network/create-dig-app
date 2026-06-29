@@ -17,7 +17,7 @@ capsule with `digstore deploy`. *Iterate for free, publish when it's ready.*
 npm install
 npm run dev            # Vite dev server at http://localhost:5173
 npm run build          # production build -> dist/ (your content root)
-digstore dev           # preview on the real dig:// read path — FREE, no chain, no spend
+digstore dev           # preview on the real chia:// read path — FREE, no chain, no spend
 ```
 
 `digstore dev` serves your built site through the genuine DIG read path (encrypt → compile → verify

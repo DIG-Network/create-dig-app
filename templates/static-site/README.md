@@ -15,7 +15,7 @@ when you create or run this project — you only spend **$DIG** the moment you p
 ```sh
 npm install
 npm run build          # copies src/ -> public/ (your content root)
-digstore dev           # preview on the real dig:// read path — FREE, no chain, no spend
+digstore dev           # preview on the real chia:// read path — FREE, no chain, no spend
 ```
 
 `digstore dev` serves your built site through the genuine DIG read path (encrypt → compile → verify

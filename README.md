@@ -3,7 +3,7 @@
 Scaffold a wallet-wired, deployable **DIG Network** app — **free, no mint**. The JS front door for
 building dapps, frontends, and NFT collections on Chia.
 
-> **Prefer Rust?** [`digstore new`](https://docs.dig.net/docs/digstore/cli/new) scaffolds the same
+> **Prefer Rust?** [`digstore new`](https://docs.dig.net/docs/build-a-dapp/scaffold) scaffolds the same
 > starters from the CLI — `create-dig-app` and `digstore new` are the two front doors to the same
 > templates (the `static-site` / `vite-react` / … ids match).
 
@@ -48,7 +48,7 @@ touch the chain, or spend any funds. You spend **$DIG** only when you publish a 
 `digstore deploy`. *Iterate for free, publish when it's ready.*
 
 ```sh
-digstore dev      # preview on the real dig:// read path — FREE, no chain, no spend
+digstore dev      # preview on the real chia:// read path — FREE, no chain, no spend
 digstore deploy   # publish a capsule when you're ready (the only step that spends $DIG)
 ```
 
