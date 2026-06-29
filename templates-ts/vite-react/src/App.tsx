@@ -7,11 +7,11 @@ export default function App() {
         change, or take down.
       </p>
       <p className="muted">
-        Build and preview for <strong>free</strong>. You only spend 100 DIG when you publish.
+        Build and preview for <strong>free</strong>. You only spend $DIG when you publish.
       </p>
       <pre>
         <code>{`digstore dev      # preview, free
-digstore deploy   # publish a capsule (100 DIG)`}</code>
+digstore deploy   # publish a capsule ($DIG)`}</code>
       </pre>
     </main>
   );

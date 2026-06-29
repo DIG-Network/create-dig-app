@@ -47,7 +47,7 @@ export async function connectWallet(hooks = {}) {
  * hand them to `provider.signCoinSpends(...)`. Filling in the concrete mint builder + funding coins
  * is left to you — see the chip35 spend builder + the "Build a dapp on Chia" tutorial:
  *   https://github.com/DIG-Network/dig-sdk
- *   https://docs.dig.net/build-a-dapp
+ *   https://docs.dig.net/docs/build-a-dapp
  *
  * It is intentionally NOT called automatically — minting spends real funds.
  *
@@ -65,7 +65,7 @@ export async function mint(provider) {
   if (coinSpends.length === 0) {
     throw new Error(
       "No mint spend wired yet. Build your coin spends with @dignetwork/dig-sdk/spend, then sign them. " +
-        "See https://docs.dig.net/build-a-dapp",
+        "See https://docs.dig.net/docs/build-a-dapp",
     );
   }
   return provider.signCoinSpends(coinSpends);

@@ -11,7 +11,7 @@ Scaffolded with `npm create dig-app` (template: `next-static`, language: TypeScr
 ## Free until publish
 
 Scaffolding, building, and previewing cost **nothing**. There is **no mint, no chain, and no spend**
-when you create or run this project — you only spend a flat **100 DIG** the moment you publish a
+when you create or run this project — you only spend **$DIG** the moment you publish a
 capsule with `digstore deploy`. *Iterate for free, publish when it's ready.*
 
 ## Develop
@@ -24,10 +24,10 @@ npm run build          # static export -> out/ (your content root; type-checked 
 digstore dev           # preview on the real dig:// read path — FREE, no chain, no spend
 ```
 
-## Publish (this is the only step that spends DIG)
+## Publish (this is the only step that spends $DIG)
 
 ```sh
-digstore deploy        # build + publish a capsule (100 DIG + a small XCH fee)
+digstore deploy        # build + publish a capsule ($DIG + a small XCH fee)
 ```
 
 Your site goes live at its `*.on.dig.net` address. Re-run `digstore deploy` to ship an update.
@@ -35,7 +35,7 @@ Your site goes live at its `*.on.dig.net` address. Re-run `digstore deploy` to s
 ## Deploy from CI
 
 Wire up push-to-deploy with the GitHub Action:
-<https://docs.dig.net/digstore/cli/deploy-from-github-actions>.
+<https://docs.dig.net/docs/digstore/cli/deploy-from-github-actions>.
 
 ## Config
 
