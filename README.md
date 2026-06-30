@@ -202,8 +202,15 @@ the *kind* of failure:
 
 ```sh
 node --test test/         # run the test suite (no install needed)
+npm ci && npm run coverage # run the suite under coverage with the ≥80% gate (installs c8)
 node bin/create-dig-app.js my-app --template static-site   # run the CLI locally
 ```
+
+The runtime package has **zero dependencies** — `node --test test/` runs the whole suite on the
+standard library alone. The only dev dependency is [`c8`](https://github.com/bcoe/c8), the coverage
+runner: `npm run coverage` runs the same tests and **fails if line/branch/function/statement coverage
+drops below 80%** (thresholds live in `.c8rc.json`, scoped to `lib/` + `bin/`). CI enforces this gate
+on every push and PR across the Node 18 and 20 matrix.
 
 ## License
 

@@ -2,3 +2,7 @@ node_modules/
 *.tgz
 .DS_Store
 *.log
+
+# Coverage artifacts (c8 / nyc)
+coverage/
+.nyc_output/
