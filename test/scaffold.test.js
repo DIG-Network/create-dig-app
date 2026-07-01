@@ -279,6 +279,63 @@ test("wallet templates wire ChiaProvider in auto mode with WalletConnect→Sage"
   }
 });
 
+// ---------------------------------------------------------------------------
+// Wasm build wiring — wallet templates import the SDK, which loads the CHIP-0035
+// spend builder (chip35-dl-coin-wasm) as a WebAssembly ES module with top-level
+// await. Vite cannot bundle that without vite-plugin-wasm + vite-plugin-top-level-await,
+// so EVERY wallet template must wire both plugins in its vite config AND declare
+// them as devDependencies — in the JS and TS variants alike. Regression guard for
+// the dapp-window-chia production-build failure ("ESM integration proposal for
+// Wasm is not supported").
+// ---------------------------------------------------------------------------
+
+const WASM_PLUGINS = ["vite-plugin-wasm", "vite-plugin-top-level-await"];
+
+for (const lang of ["js", "ts"]) {
+  test(`wallet templates (${lang}) declare the wasm build plugins as devDependencies`, () => {
+    for (const name of WALLET_TEMPLATES) {
+      const root = freshDir();
+      try {
+        const dest = join(root, "app");
+        scaffold({ appName: "wallet app", template: name, lang, targetDir: dest });
+        const pkg = JSON.parse(read(dest, "package.json"));
+        for (const plugin of WASM_PLUGINS) {
+          assert.ok(
+            (pkg.devDependencies || {})[plugin],
+            `${name} (${lang}) devDependencies include ${plugin} — without it the SDK's wasm spend builder breaks \`vite build\``,
+          );
+        }
+      } finally {
+        rmSync(root, { recursive: true, force: true });
+      }
+    }
+  });
+
+  test(`wallet templates (${lang}) enable wasm() + topLevelAwait() in the vite config`, () => {
+    for (const name of WALLET_TEMPLATES) {
+      const root = freshDir();
+      try {
+        const dest = join(root, "app");
+        scaffold({ appName: "wallet app", template: name, lang, targetDir: dest });
+        const configFile = lang === "ts" ? "vite.config.ts" : "vite.config.js";
+        assert.ok(existsSync(join(dest, configFile)), `${name} (${lang}) ships ${configFile}`);
+        const config = read(dest, configFile);
+        for (const plugin of WASM_PLUGINS) {
+          assert.ok(config.includes(plugin), `${name} (${lang}) ${configFile} imports ${plugin}`);
+        }
+        assert.match(config, /wasm\(\)/, `${name} (${lang}) ${configFile} calls wasm() in plugins`);
+        assert.match(
+          config,
+          /topLevelAwait\(\)/,
+          `${name} (${lang}) ${configFile} calls topLevelAwait() in plugins`,
+        );
+      } finally {
+        rmSync(root, { recursive: true, force: true });
+      }
+    }
+  });
+}
+
 test("wallet README documents the WalletConnect projectId (Reown / WalletConnect Cloud)", () => {
   for (const name of WALLET_TEMPLATES) {
     const root = freshDir();
