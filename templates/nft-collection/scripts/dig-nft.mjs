@@ -56,6 +56,18 @@ function normalizeAttributes(attrs) {
     .filter((a) => a.trait_type !== "");
 }
 
+// Collection-level attributes use CHIP-0007's `type` field, NOT the item shape's `trait_type`
+// (#189 — the emit-side twin of digstore's #187 / chip35_dl_coin's own fix). Still accepts the
+// legacy `trait_type`/`traitType` spellings on input so an existing collection.json keeps working.
+function normalizeCollectionAttributes(attrs) {
+  return (attrs ?? [])
+    .map((a) => ({
+      type: String(a?.type ?? a?.trait_type ?? a?.traitType ?? "").trim(),
+      value: attrValue(a?.value),
+    }))
+    .filter((a) => a.type !== "");
+}
+
 function buildChip0007Metadata(input) {
   const md = { format: CHIP0007_FORMAT, name: String(input?.name ?? "") };
   const description = input?.description;
@@ -64,7 +76,7 @@ function buildChip0007Metadata(input) {
   if (input?.collection) {
     const c = input.collection;
     const ref = { id: String(c.id ?? ""), name: String(c.name ?? "") };
-    const cattrs = normalizeAttributes(c.attributes);
+    const cattrs = normalizeCollectionAttributes(c.attributes);
     if (cattrs.length > 0) ref.attributes = cattrs;
     md.collection = ref;
   }

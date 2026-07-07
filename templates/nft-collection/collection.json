@@ -9,6 +9,6 @@
   "icon": "assets/icon.svg",
   "banner": "assets/banner.svg",
   "attributes": [
-    { "trait_type": "Website", "value": "https://example.on.dig.net" }
+    { "type": "Website", "value": "https://example.on.dig.net" }
   ]
 }
