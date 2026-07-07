@@ -13,21 +13,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [18, 20]
+        # 22 is included because publish-npm.yml's trusted-publishing job runs the same coverage
+        # suite on Node 22 (OIDC trusted publishing requires Node >= 22.14.0) — keep the whole
+        # supported range covered so a Node-version-specific regression (e.g. the `node --test`
+        # CLI's handling of a bare path argument) is caught here, not on a release run.
+        node: [18, 20, 22]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
       # create-dig-app ships with ZERO runtime dependencies; the only dev dependency is the coverage
-      # runner (c8), pinned to a version that supports the whole node 18/20 matrix. Install it so the
-      # suite runs under measured coverage with a CI-enforced ≥80% floor.
+      # runner (c8), pinned to a version that supports the whole node 18/20/22 matrix. Install it so
+      # the suite runs under measured coverage with a CI-enforced ≥80% floor.
       - name: Install dev dependencies (c8)
         run: npm ci
-      # `npm run coverage` runs the same `node --test test/` suite under c8 with the thresholds in
-      # .c8rc.json (lines/branches/functions/statements ≥ 80, scoped to lib/ + bin/). c8 sets
-      # NODE_V8_COVERAGE so the spawned bin subprocess (test/bin.test.js) is measured too. The job
-      # FAILS if coverage drops below the floor.
+      # `npm run coverage` runs the same `node --test` suite (auto-discovering test/) under c8 with
+      # the thresholds in .c8rc.json (lines/branches/functions/statements ≥ 80, scoped to lib/ +
+      # bin/). c8 sets NODE_V8_COVERAGE so the spawned bin subprocess (test/bin.test.js) is measured
+      # too. The job FAILS if coverage drops below the floor.
       - name: Run tests with the coverage gate (≥80%)
         run: npm run coverage
 

@@ -1,6 +1,6 @@
 {
   "name": "create-dig-app",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Scaffold a wallet-wired, deployable DIG Network app — free, no mint. The JS front door for building dapps, frontends, and NFT collections on Chia.",
   "license": "MIT",
   "author": "DIG Network",
@@ -41,8 +41,8 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node --test test/",
-    "coverage": "c8 node --test test/",
+    "test": "node --test",
+    "coverage": "c8 node --test",
     "start": "node bin/create-dig-app.js"
   },
   "devDependencies": {
