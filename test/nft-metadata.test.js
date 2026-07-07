@@ -54,10 +54,13 @@ test("metadata_hash equals sha256 of the canonical JSON bytes (pinned vector)", 
 
 test("full-document field order is pinned (matches digstore generated_item_json_is_pinned)", () => {
   // Build via the collection-merge path the generator actually uses.
+  // #189: the collection-level attribute uses CHIP-0007's "type" (not the item shape's
+  // "trait_type") — this pinned string matches digstore's post-#187
+  // `generated_item_json_is_pinned` exactly.
   const collection = {
     id: "dig-punks",
     name: "DIG Punks",
-    attributes: [{ trait_type: "Website", value: "https://dig.net" }],
+    attributes: [{ type: "Website", value: "https://dig.net" }],
   };
   const items = [
     { name: "DIG Punk #1", description: "first", attributes: [{ trait_type: "Background", value: "Blue" }] },
@@ -66,7 +69,7 @@ test("full-document field order is pinned (matches digstore generated_item_json_
   const mds = generateItemMetadata(collection, items);
   assert.equal(
     canonicalJson(mds[0]),
-    `{"format":"CHIP-0007","name":"DIG Punk #1","description":"first","collection":{"id":"dig-punks","name":"DIG Punks","attributes":[{"trait_type":"Website","value":"https://dig.net"}]},"attributes":[{"trait_type":"Background","value":"Blue"}],"series_number":1,"series_total":2,"minting_tool":"DIG"}`,
+    `{"format":"CHIP-0007","name":"DIG Punk #1","description":"first","collection":{"id":"dig-punks","name":"DIG Punks","attributes":[{"type":"Website","value":"https://dig.net"}]},"attributes":[{"trait_type":"Background","value":"Blue"}],"series_number":1,"series_total":2,"minting_tool":"DIG"}`,
   );
 });
 
@@ -99,6 +102,44 @@ test("attribute values are coerced to strings (byte-stable hashing)", () => {
 });
 
 // ---------------------------------------------------------------------------
+// #189: collection attributes serialize as "type", item attributes stay "trait_type"
+// (emit-side twin of digstore's #187 / chip35_dl_coin's own fix)
+// ---------------------------------------------------------------------------
+
+test("collection attributes serialize with CHIP-0007's \"type\", not \"trait_type\"", () => {
+  const md = buildChip0007Metadata({
+    name: "x",
+    collection: { id: "c", name: "C", attributes: [{ type: "icon", value: "https://dig.net/icon.png" }] },
+  });
+  const json = canonicalJson(md);
+  assert.match(json, /"collection":\{"id":"c","name":"C","attributes":\[\{"type":"icon"/);
+  assert.doesNotMatch(json, /"trait_type":"icon"/);
+});
+
+test("collection attributes accept the legacy trait_type/traitType spellings on input (back-compat)", () => {
+  const viaTraitType = buildChip0007Metadata({
+    name: "x",
+    collection: { id: "c", name: "C", attributes: [{ trait_type: "icon", value: "a" }] },
+  });
+  const viaCamelCase = buildChip0007Metadata({
+    name: "x",
+    collection: { id: "c", name: "C", attributes: [{ traitType: "icon", value: "a" }] },
+  });
+  for (const md of [viaTraitType, viaCamelCase]) {
+    assert.deepEqual(md.collection.attributes, [{ type: "icon", value: "a" }]);
+  }
+});
+
+test("item attributes are unaffected by #189 — they still use trait_type", () => {
+  const md = buildChip0007Metadata({
+    name: "x",
+    attributes: [{ trait_type: "Background", value: "Blue" }],
+  });
+  assert.deepEqual(md.attributes, [{ trait_type: "Background", value: "Blue" }]);
+  assert.doesNotMatch(canonicalJson(md), /"attributes":\[\{"type"/);
+});
+
+// ---------------------------------------------------------------------------
 // collectionId slug — must match digstore slug() / hub collectionId()
 // ---------------------------------------------------------------------------
 
@@ -126,9 +167,9 @@ test("generateItemMetadata stamps collection ref, 1-based series, and minting_to
 });
 
 test("mergeItem keeps per-item traits distinct from collection-level traits", () => {
-  const collection = { id: "c", name: "C", attributes: [{ trait_type: "Website", value: "https://dig.net" }] };
+  const collection = { id: "c", name: "C", attributes: [{ type: "Website", value: "https://dig.net" }] };
   const md = mergeItem(collection, { name: "A", attributes: [{ trait_type: "Hat", value: "Top" }] }, 0, 1);
-  assert.deepEqual(md.collection.attributes, [{ trait_type: "Website", value: "https://dig.net" }]);
+  assert.deepEqual(md.collection.attributes, [{ type: "Website", value: "https://dig.net" }]);
   assert.deepEqual(md.attributes, [{ trait_type: "Hat", value: "Top" }]);
 });
 
