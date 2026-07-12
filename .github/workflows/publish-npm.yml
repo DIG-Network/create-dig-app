@@ -9,12 +9,10 @@ name: publish-npm
 #
 # create-dig-app is a plain-JS scaffolder CLI (no bundling/build step, no root-level TypeScript —
 # `type: "module"`, no tsconfig.json at repo root): it ships bin/lib/templates/templates-ts as-is
-# (see package.json `files`). Its own package.json only defines `test`/`coverage`/`start` scripts,
-# so the publish gate here re-runs the SAME coverage-gated suite ci.yml enforces at >=80%
-# (.c8rc.json), not a build/typecheck/test:examples pipeline that repo does not have. (The
-# generated TypeScript TEMPLATES do have their own `typecheck` script, but that is scaffolded
-# output validated by ci.yml's "scaffold + typecheck + build (TS)" job against a sample app in its
-# own directory — not something this package builds or typechecks at its own root.)
+# (see package.json `files`). This workflow does NOT re-run the test/coverage suite: ci.yml already
+# gates every PR (coverage-gated tests + the TS-scaffold smoke matrix) against the exact tree that
+# gets tagged/released, so a release run is build+package+publish only (no flaky-test surface here
+# to re-trip a release — see CLAUDE.md flaky-test-management, #489/#488).
 on:
   push:
     tags: ['v*']
@@ -33,7 +31,7 @@ permissions:
 
 jobs:
   publish:
-    name: coverage-gated tests + npm publish
+    name: build + package + npm publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -45,8 +43,6 @@ jobs:
           cache: npm
           registry-url: "https://registry.npmjs.org"
       - run: npm ci
-      # Gate the publish on the same coverage-gated test suite ci.yml runs (>=80% per .c8rc.json).
-      - run: npm run coverage
       # Trusted publishing requires npm CLI >= 11.5.1; Node 22 bundles npm 10.
       - name: upgrade npm for trusted publishing
         run: |
