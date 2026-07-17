@@ -215,7 +215,7 @@ function capsuleResourceUris({ storeId, root, resource }) {
   const sid = String(storeId ?? "").trim();
   const r = String(root ?? "").trim();
   const res = String(resource ?? "").trim().replace(/^\/+/, "");
-  const urn = `dig://urn:dig:chia:${sid}${r ? `:${r}` : ""}/${res}`;
+  const urn = `urn:dig:chia:${sid}${r ? `:${r}` : ""}/${res}`;
   const https = `https://${sid}.${CAPSULE_HTTPS_GATEWAY}/${res}`;
   return { urn, https, uris: [urn, https] };
 }
