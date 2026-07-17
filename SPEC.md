@@ -487,12 +487,13 @@ available ids. The rendered text is a concise, accurate human summary plus the c
 
 `capsuleResourceUris({ storeId, root?, resource })` returns `{ urn, https, uris }` where:
 
-- `urn` = `dig://urn:dig:chia:<storeId>[:<root>]/<resource>` (leading slashes stripped from
-  `resource`).
+- `urn` = the canonical bare `urn:dig:chia:<storeId>[:<root>]/<resource>` (leading slashes stripped
+  from `resource`). It carries NO `dig://` prefix — `dig://` is not a content/resource scheme, and the
+  `dig-urn-resolver` consumes the bare URN and decides where to fetch it.
 - `https` = `https://<storeId>.usercontent.dig.net/<resource>` (the decrypted-capsule gateway,
   mirroring the hub's `CAPSULE_HTTPS_GATEWAY`).
-- `uris` = `[urn, https]` — the `dig://` URN first, then the https fallback (the order the hub and
-  digstore use for `data_uris` / `metadata_uris` / `license_uris`).
+- `uris` = `[urn, https]` — the canonical bare URN first, then the https fallback (the order the hub
+  and digstore use for `data_uris` / `metadata_uris` / `license_uris`).
 
 Until a capsule is published, generated URIs use the placeholder store id
 `STORE_ID_AFTER_PUBLISH`; `digstore` fills the real id on publish.

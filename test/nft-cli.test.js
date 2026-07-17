@@ -85,9 +85,11 @@ test("generateMetadata emits one canonical metadata file per image + a manifest"
     assert.equal(item.media.data_hash, sha256Hex(PNG_1x1));
     // metadata_hash is sha256 of the canonical metadata JSON bytes.
     assert.equal(item.media.metadata_hash, sha256Hex(Buffer.from(canonicalJson(md), "utf8")));
-    // URIs are present (placeholder store id) with dig:// first.
-    assert.ok(item.media.data_uris[0].startsWith("dig://"));
-    assert.ok(item.media.metadata_uris[0].startsWith("dig://"));
+    // URIs are present (placeholder store id): the canonical bare URN first, no dig:// prefix (#686).
+    assert.ok(item.media.data_uris[0].startsWith("urn:dig:chia:"));
+    assert.ok(item.media.metadata_uris[0].startsWith("urn:dig:chia:"));
+    assert.doesNotMatch(item.media.data_uris[0], /dig:\/\//);
+    assert.doesNotMatch(item.media.metadata_uris[0], /dig:\/\//);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

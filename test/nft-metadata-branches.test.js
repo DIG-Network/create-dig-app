@@ -87,7 +87,8 @@ test("itemsFromImages keeps the stem when it cannot be humanized", () => {
 
 test("capsuleResourceUris embeds the root hash when one is given", () => {
   const { urn, https, uris } = capsuleResourceUris({ storeId: "store123", root: "root456", resource: "/images/a.png" });
-  assert.match(urn, /^dig:\/\/urn:dig:chia:store123:root456\/images\/a\.png$/);
+  assert.match(urn, /^urn:dig:chia:store123:root456\/images\/a\.png$/);
+  assert.doesNotMatch(urn, /dig:\/\//, "the URN carries no dig:// prefix (the #686 double-scheme bug)");
   assert.match(https, /^https:\/\/store123\./);
   assert.equal(uris[0], urn);
   assert.equal(uris[1], https);
