@@ -4,6 +4,11 @@ All notable changes to this project are documented here.
 This project adheres to [Semantic Versioning](https://semver.org) and
 [Conventional Commits](https://www.conventionalcommits.org).
 
+## [0.2.4] - 2026-07-17
+
+### Bug Fixes
+- **nft:** Emit canonical bare root-pinned URN in NFT templates (no dig:// prefix) (#6)
+
 ## [0.2.3] - 2026-07-12
 
 ### Features
