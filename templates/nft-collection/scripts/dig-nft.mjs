@@ -346,24 +346,25 @@ function resolveItems(root, imageFiles) {
   return items.map((item, i) => ({ ...item, file: item.file || imageFiles[i] }));
 }
 
-function readGeneratedLicense(root, collection) {
+function readGeneratedLicense(root, collection, storeId = PLACEHOLDER_STORE_ID) {
   const id = collection?.license;
   if (!id || !LICENSES[id]) return null;
   const file = licenseFileName(id);
   const path = join(root, "licenses", file);
   if (!existsSync(path)) return null;
   const bytes = readFileSync(path);
-  const { uris } = capsuleResourceUris({ storeId: PLACEHOLDER_STORE_ID, resource: `licenses/${file}` });
+  const { uris } = capsuleResourceUris({ storeId, resource: `licenses/${file}` });
   return { id, file, hash: sha256Hex(bytes), uris };
 }
 
-function generateMetadata(root) {
+function generateMetadata(root, opts = {}) {
+  const storeId = opts.storeId ?? PLACEHOLDER_STORE_ID;
   const collection = loadCollection(root);
   const imageFiles = listImages(root);
   const items = resolveItems(root, imageFiles);
   const metadataDir = join(root, "metadata");
   mkdirSync(metadataDir, { recursive: true });
-  const license = readGeneratedLicense(root, collection);
+  const license = readGeneratedLicense(root, collection, storeId);
   const mds = generateItemMetadata(collection, items);
   const manifest = [];
   for (let i = 0; i < items.length; i++) {
@@ -378,8 +379,8 @@ function generateMetadata(root) {
     const metaName = `${stem}.json`;
     writeFileSync(join(metadataDir, metaName), canonicalJson(md) + "\n");
     const metadataHash = metadataHashHex(md);
-    const data = capsuleResourceUris({ storeId: PLACEHOLDER_STORE_ID, resource: `images/${file}` });
-    const meta = capsuleResourceUris({ storeId: PLACEHOLDER_STORE_ID, resource: `metadata/${metaName}` });
+    const data = capsuleResourceUris({ storeId, resource: `images/${file}` });
+    const meta = capsuleResourceUris({ storeId, resource: `metadata/${metaName}` });
     manifest.push({
       name: md.name,
       description: item.description || undefined,
@@ -461,13 +462,28 @@ function validateProject(root) {
 
 // ── CLI dispatch ──────────────────────────────────────────────────────────────────────────────────
 
+/** Read a `--flag value` / `--flag=value` option from an argv slice; undefined if absent. */
+function flagValue(args, name) {
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === name) return args[i + 1];
+    if (args[i].startsWith(`${name}=`)) return args[i].slice(name.length + 1);
+  }
+  return undefined;
+}
+
 function main() {
   const cmd = process.argv[2];
+  const args = process.argv.slice(3);
   try {
     if (cmd === "metadata") {
-      const r = generateMetadata(ROOT);
+      const storeId = flagValue(args, "--store-id");
+      const r = generateMetadata(ROOT, storeId ? { storeId } : {});
       console.log(`Generated ${r.count} CHIP-0007 metadata file(s) → metadata/ and the items.json manifest.`);
-      console.log("Next: `npm run validate`, then mint with `digstore collection mint --collection collection.json --manifest items.json`.");
+      if (storeId) {
+        console.log(`Baked store id ${storeId} into every URI. Next: \`npm run validate\`, then \`digstore collection mint --collection collection.json --manifest items.json\`.`);
+      } else {
+        console.log("Used the placeholder store id. After `digstore deploy` gives you the real store id, re-run `npm run generate:metadata -- --store-id <id>` to bake it in — otherwise the minted NFT keeps the placeholder. Then `npm run validate` and `digstore collection mint`.");
+      }
     } else if (cmd === "license") {
       const r = generateLicense(ROOT);
       console.log(`Wrote licenses/${r.file} (sha256 ${r.hash}).`);
@@ -476,8 +492,9 @@ function main() {
       const r = validateProject(ROOT);
       console.log(`OK — ${r.checked} item(s) valid: CHIP-0007 schema + data/metadata/license hashes agree with the real bytes.`);
     } else {
-      console.error("Usage: node scripts/dig-nft.mjs <metadata|license|validate>");
+      console.error("Usage: node scripts/dig-nft.mjs <metadata|license|validate> [--store-id <id>]");
       console.error("  metadata  generate CHIP-0007 metadata/*.json + items.json from images/ + collection.json");
+      console.error("            --store-id <id>  bake the REAL published store id into URIs (after `digstore deploy`)");
       console.error("  license   write the license chosen in collection.json into licenses/");
       console.error("  validate  re-verify schema + URI/hash agreement before minting");
       process.exit(2);

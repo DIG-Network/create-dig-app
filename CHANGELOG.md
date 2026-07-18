@@ -4,6 +4,14 @@ All notable changes to this project are documented here.
 This project adheres to [Semantic Versioning](https://semver.org) and
 [Conventional Commits](https://www.conventionalcommits.org).
 
+## [0.3.0] - 2026-07-18
+
+### Features
+- **nft:** Inject the real published store id into generated NFT URIs. `generateMetadata(root, { storeId })` and the template's `dig-nft.mjs metadata --store-id <id>` bake the real store id (from `digstore deploy`) into `data_uris`/`metadata_uris`/`license_uris`; the store id defaults to the `STORE_ID_AFTER_PUBLISH` placeholder for the pre-publish pass. Fixes the mint flow that previously left the placeholder pinned on-chain permanently. (#350)
+
+### Documentation
+- **spec:** Correct §11.7 (no automatic store-id substitution on publish — the caller re-generates with `--store-id`) and §12 (`create-dig-app` ships `nft-collection`, which `digstore new` does not yet expose — the front doors are not at full parity today). Fix a stale `modules/dig-sdk/...` comment path. (#350)
+
 ## [0.2.4] - 2026-07-17
 
 ### Bug Fixes

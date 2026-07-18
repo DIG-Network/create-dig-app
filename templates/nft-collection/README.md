@@ -86,10 +86,17 @@ Everything shared by all items lives here:
 ## Mint it
 
 ```sh
-# Publish the art + metadata + licenses as ONE capsule (this is the only deploy that spends $DIG):
+# Publish the art + metadata + licenses as ONE capsule (this is the only deploy that spends $DIG).
+# The deploy prints your capsule's real store id — copy it for the next step:
 digstore deploy
 
-# Mint the NFTs on-chain from collection.json + the generated items.json (wallet-signed):
+# Bake the REAL store id into every metadata/item URI. The first `npm run generate` used a
+# placeholder (STORE_ID_AFTER_PUBLISH) because the store id isn't known until you deploy. Skip this
+# and the minted NFT points at the placeholder FOREVER — there is no later substitution step:
+npm run generate:metadata -- --store-id <store-id-from-deploy>
+npm run validate
+
+# Mint the NFTs on-chain from collection.json + the finalized items.json (wallet-signed):
 digstore collection create --name "__DISPLAY_NAME__"     # one-time: register the collection on-chain
 digstore collection mint --collection collection.json --manifest items.json --did <your-did>
 ```

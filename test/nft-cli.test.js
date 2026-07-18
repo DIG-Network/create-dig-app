@@ -95,6 +95,41 @@ test("generateMetadata emits one canonical metadata file per image + a manifest"
   }
 });
 
+test("generateMetadata injects a real store id into every URI when one is given (#350)", () => {
+  const root = freshProject();
+  try {
+    writeFileSync(join(root, "images", "frog-1.png"), PNG_1x1);
+    // A generated license means license_uris are exercised too (the third placeholder site).
+    generateLicense(root);
+    const STORE_ID = "a1b2c3d4e5f60718293a4b5c6d7e8f90";
+
+    const res = generateMetadata(root, { storeId: STORE_ID });
+    assert.equal(res.count, 1);
+
+    const media = JSON.parse(read(root, "items.json"))[0].media;
+    const uris = [...media.data_uris, ...media.metadata_uris, ...media.license_uris];
+    assert.ok(uris.length >= 3, "data + metadata + license URIs are all present");
+    for (const u of uris) {
+      assert.ok(u.includes(STORE_ID), `URI carries the real store id: ${u}`);
+      assert.doesNotMatch(u, /STORE_ID_AFTER_PUBLISH/, `no placeholder leaks: ${u}`);
+    }
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("generateMetadata defaults to the placeholder store id when none is given (parity preserved)", () => {
+  const root = freshProject();
+  try {
+    writeFileSync(join(root, "images", "frog-1.png"), PNG_1x1);
+    generateMetadata(root);
+    const media = JSON.parse(read(root, "items.json"))[0].media;
+    assert.match(media.data_uris[0], /STORE_ID_AFTER_PUBLISH/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("generateMetadata uses a traits.csv when present (per-image traits)", () => {
   const root = freshProject();
   try {

@@ -116,6 +116,30 @@ test("vendored tool generates + validates a real collection (subprocess, exit 0)
   }
 });
 
+test("vendored tool bakes a real --store-id into every URI (subprocess, #350)", () => {
+  const root = freshDir();
+  try {
+    const dest = scaffoldCollection(root);
+    const script = join(dest, "scripts", "dig-nft.mjs");
+    const STORE_ID = "a1b2c3d4e5f60718293a4b5c6d7e8f90";
+    execFileSync(process.execPath, [script, "license"], { cwd: dest });
+    execFileSync(process.execPath, [script, "metadata", "--store-id", STORE_ID], { cwd: dest });
+    const manifest = JSON.parse(readFileSync(join(dest, "items.json"), "utf8"));
+    const uris = manifest.flatMap((it) => [
+      ...it.media.data_uris,
+      ...it.media.metadata_uris,
+      ...it.media.license_uris,
+    ]);
+    assert.ok(uris.length >= 3, "data + metadata + license URIs present");
+    for (const u of uris) {
+      assert.ok(u.includes(STORE_ID), `URI carries the real store id: ${u}`);
+      assert.doesNotMatch(u, /STORE_ID_AFTER_PUBLISH/, `no placeholder leaks: ${u}`);
+    }
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("vendored tool output is byte-identical to the canonical lib (anti-drift)", () => {
   const root = freshDir();
   try {
