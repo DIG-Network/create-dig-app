@@ -495,8 +495,12 @@ available ids. The rendered text is a concise, accurate human summary plus the c
 - `uris` = `[urn, https]` — the canonical bare URN first, then the https fallback (the order the hub
   and digstore use for `data_uris` / `metadata_uris` / `license_uris`).
 
-Until a capsule is published, generated URIs use the placeholder store id
-`STORE_ID_AFTER_PUBLISH`; `digstore` fills the real id on publish.
+Until a capsule is published its store id is unknown, so the first metadata generation uses the
+placeholder store id `STORE_ID_AFTER_PUBLISH`. There is NO automatic substitution on publish — after
+`digstore deploy` returns the real store id, the caller MUST re-run generation with that id
+(`generateMetadata(root, { storeId })`, CLI `dig-nft.mjs metadata --store-id <id>`) to bake the real
+id into `data_uris` / `metadata_uris` / `license_uris` before `digstore collection mint`. Minting
+against the placeholder would pin URIs that point at a non-existent store permanently.
 
 ### 11.8 Validation
 
@@ -545,7 +549,11 @@ The filesystem glue over the pure core, run against a real `nft-collection` proj
 - **Stable machine contracts.** Exit codes, error `code` strings, and the JSON envelope shapes are
   stable; breaking changes bump `SCHEMA_VERSION`.
 - **Two front doors, one set of templates.** `create-dig-app` (JS) and `digstore new` (Rust) name
-  the same starters by the same ids; the shared ids MUST agree.
+  the shared starters by the same ids; where a starter exists in both, the ids MUST agree.
+  `create-dig-app` additionally ships `nft-collection` (with the vendored dig-nft tooling), which
+  `digstore new`'s Rust registry does not yet expose — the two front doors are NOT at full parity
+  today. Reaching parity (adding `nft-collection` to `digstore new`, or documenting it as JS-only) is
+  tracked cross-repo; this SPEC states the actual current set, not an aspirational invariant.
 
 ---
 
