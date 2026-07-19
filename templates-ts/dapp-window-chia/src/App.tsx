@@ -46,12 +46,12 @@ export default function App() {
     <main className="wrap">
       <h1>__DISPLAY_NAME__</h1>
       <p>
-        A wallet-wired dapp on the <strong>DIG Network</strong>. Your wallet is your account — no
-        email, no password.
+        A wallet-wired dapp on the <strong>DIG Network</strong>. Your wallet is your account — no email, no
+        password.
       </p>
       <p className="muted">
-        Connecting and previewing are <strong>free</strong>. There is no mint, no chain, and no spend
-        here — you only spend $DIG when you publish with <code>digstore deploy</code>.
+        Connecting and previewing are <strong>free</strong>. There is no mint, no chain, and no spend here —
+        you only spend $DIG when you publish with <code>digstore deploy</code>.
       </p>
 
       {address ? (

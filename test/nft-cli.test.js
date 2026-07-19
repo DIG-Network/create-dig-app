@@ -13,12 +13,7 @@ import { mkdtempSync, rmSync, mkdirSync, writeFileSync, readFileSync, existsSync
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import {
-  generateMetadata,
-  generateLicense,
-  validateProject,
-  loadCollection,
-} from "../lib/nft-cli.js";
+import { generateMetadata, generateLicense, validateProject, loadCollection } from "../lib/nft-cli.js";
 import { canonicalJson, sha256Hex, validateMetadata } from "../lib/nft-metadata.js";
 
 /** A 1x1 transparent PNG (real, valid image bytes) — used as placeholder/sample art. */

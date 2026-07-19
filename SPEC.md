@@ -16,7 +16,7 @@ filesystem operation: it MUST NOT mint, sign, spend, or contact the chain or net
 
 - **Name / bin.** The package name is `create-dig-app`; it exposes one bin, `create-dig-app`,
   mapped to `bin/create-dig-app.js`. `npm create dig-app` / `npm init dig-app` / `npx
-  create-dig-app` all resolve to this bin.
+create-dig-app` all resolve to this bin.
 - **Module system.** ESM (`"type": "module"`). All source is ESM; there is no CJS entry point.
 - **Runtime dependencies.** ZERO. The package MUST run using only the Node standard library. The
   only devDependency is the coverage runner (`c8`).
@@ -38,18 +38,18 @@ filesystem operation: it MUST NOT mint, sign, spend, or contact the chain or net
 
 ### 2.2 Options
 
-| Option | Alias(es) | Value | Effect |
-|---|---|---|---|
-| `--template` | `-t` | `<template>` | Select a template (canonical id or alias, §5). Also accepted as `--template=<t>`. |
-| `--typescript` | `--ts` | — | Request the TypeScript variant. |
-| `--javascript` | `--js` | — | Request the JavaScript variant (the default). |
-| `--lang` | — | `<js\|ts>` | Same as the language flags; value normalized per §7.1. Also `--lang=<v>`. |
-| `--json` | — | — | Machine mode: one structured object on stdout, all prose on stderr, no prompts. |
-| `--list-templates` | — | — | Emit the template registry (as data with `--json`, else the help text). |
-| `--help-json` | — | — | Emit the full machine self-description (flags + templates + exit codes) as JSON. |
-| `--help` | `-h` | — | Print human help. |
-| `--version` | `-v` | — | Print the version. |
-| `--` | — | — | The npm-init argument separator; ignored (a no-op token). |
+| Option             | Alias(es) | Value        | Effect                                                                            |
+| ------------------ | --------- | ------------ | --------------------------------------------------------------------------------- |
+| `--template`       | `-t`      | `<template>` | Select a template (canonical id or alias, §5). Also accepted as `--template=<t>`. |
+| `--typescript`     | `--ts`    | —            | Request the TypeScript variant.                                                   |
+| `--javascript`     | `--js`    | —            | Request the JavaScript variant (the default).                                     |
+| `--lang`           | —         | `<js\|ts>`   | Same as the language flags; value normalized per §7.1. Also `--lang=<v>`.         |
+| `--json`           | —         | —            | Machine mode: one structured object on stdout, all prose on stderr, no prompts.   |
+| `--list-templates` | —         | —            | Emit the template registry (as data with `--json`, else the help text).           |
+| `--help-json`      | —         | —            | Emit the full machine self-description (flags + templates + exit codes) as JSON.  |
+| `--help`           | `-h`      | —            | Print human help.                                                                 |
+| `--version`        | `-v`      | —            | Print the version.                                                                |
+| `--`               | —         | —            | The npm-init argument separator; ignored (a no-op token).                         |
 
 ### 2.3 Parsing rules (normative)
 
@@ -110,16 +110,16 @@ If none of the above is set, the tool proceeds to scaffold (§3).
 Each failure class has a distinct non-zero code so a caller can branch on the KIND of failure.
 The table is stable and is also emitted by `--help-json` (§9.3).
 
-| Code | Symbol | Meaning |
-|---|---|---|
-| `0` | `SUCCESS` | success |
-| `1` | `INTERNAL` | unexpected/uncategorized internal error (generic fallback only) |
-| `2` | `USAGE` | usage error (bad/unknown option or malformed arguments) |
-| `3` | `UNKNOWN_TEMPLATE` | `--template` names a template that does not exist |
-| `4` | `TARGET_NOT_EMPTY` | the target directory exists and is not empty (refusing to overwrite) |
-| `5` | `MISSING_ARGS` | required args missing in non-interactive mode |
-| `6` | `TEMPLATE_FILES_MISSING` | the bundled template files are missing (packaging bug) |
-| `7` | `INVALID_APP_NAME` | the app name normalizes to nothing usable |
+| Code | Symbol                   | Meaning                                                              |
+| ---- | ------------------------ | -------------------------------------------------------------------- |
+| `0`  | `SUCCESS`                | success                                                              |
+| `1`  | `INTERNAL`               | unexpected/uncategorized internal error (generic fallback only)      |
+| `2`  | `USAGE`                  | usage error (bad/unknown option or malformed arguments)              |
+| `3`  | `UNKNOWN_TEMPLATE`       | `--template` names a template that does not exist                    |
+| `4`  | `TARGET_NOT_EMPTY`       | the target directory exists and is not empty (refusing to overwrite) |
+| `5`  | `MISSING_ARGS`           | required args missing in non-interactive mode                        |
+| `6`  | `TEMPLATE_FILES_MISSING` | the bundled template files are missing (packaging bug)               |
+| `7`  | `INVALID_APP_NAME`       | the app name normalizes to nothing usable                            |
 
 These numeric values MUST NOT change; new failure classes get new codes.
 
@@ -150,26 +150,26 @@ Classification MUST match on the error type or stable substrings, never on incid
 The registry is the SINGLE SOURCE OF TRUTH for what can be scaffolded. Each entry is
 `TemplateMeta`:
 
-| Field | Type | Meaning |
-|---|---|---|
-| `name` | string | Template id; equals the directory name under `templates/<name>/`. |
-| `title` | string | Short human title for the picker. |
-| `description` | string | One-line description for the picker and `--help`. |
-| `outputDir` | string | Built-output dir digstore publishes; written into `dig.toml` (`__OUTPUT_DIR__`). |
-| `buildCommand` | string | Build command digstore runs; written into `dig.toml` (`__BUILD_COMMAND__`). |
-| `wallet` | boolean | True iff the template wires `@dignetwork/dig-sdk` (`ChiaProvider`). |
-| `langs` | `("js"\|"ts")[]` | Languages offerable, in offer order. Always contains `js`; contains `ts` iff a variant exists under `templates-ts/<name>/`. |
+| Field          | Type             | Meaning                                                                                                                     |
+| -------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `name`         | string           | Template id; equals the directory name under `templates/<name>/`.                                                           |
+| `title`        | string           | Short human title for the picker.                                                                                           |
+| `description`  | string           | One-line description for the picker and `--help`.                                                                           |
+| `outputDir`    | string           | Built-output dir digstore publishes; written into `dig.toml` (`__OUTPUT_DIR__`).                                            |
+| `buildCommand` | string           | Build command digstore runs; written into `dig.toml` (`__BUILD_COMMAND__`).                                                 |
+| `wallet`       | boolean          | True iff the template wires `@dignetwork/dig-sdk` (`ChiaProvider`).                                                         |
+| `langs`        | `("js"\|"ts")[]` | Languages offerable, in offer order. Always contains `js`; contains `ts` iff a variant exists under `templates-ts/<name>/`. |
 
 ### 5.1 Canonical templates
 
-| id | outputDir | buildCommand | wallet | langs |
-|---|---|---|---|---|
-| `static-site` | `public` | `npm run build` | false | js |
-| `vite-react` | `dist` | `npm run build` | false | js, ts |
-| `next-static` | `out` | `npm run build` | false | js, ts |
-| `nft-drop` | `dist` | `npm run build` | true | js, ts |
-| `nft-collection` | `.` | `npm run build` | true | js |
-| `dapp-window-chia` | `dist` | `npm run build` | true | js, ts |
+| id                 | outputDir | buildCommand    | wallet | langs  |
+| ------------------ | --------- | --------------- | ------ | ------ |
+| `static-site`      | `public`  | `npm run build` | false  | js     |
+| `vite-react`       | `dist`    | `npm run build` | false  | js, ts |
+| `next-static`      | `out`     | `npm run build` | false  | js, ts |
+| `nft-drop`         | `dist`    | `npm run build` | true   | js, ts |
+| `nft-collection`   | `.`       | `npm run build` | true   | js     |
+| `dapp-window-chia` | `dist`    | `npm run build` | true   | js, ts |
 
 `templateNames()` MUST return the canonical ids in declaration (registry) order; aliases (§5.3)
 MUST NOT appear.
@@ -236,10 +236,10 @@ npm mangles some dotfiles on publish, so templates ship them `_`-prefixed and th
 restores the real name after copy+substitution. The mapping (applied only when the source file
 exists):
 
-| Shipped | Restored |
-|---|---|
-| `_gitignore` | `.gitignore` |
-| `_npmrc` | `.npmrc` |
+| Shipped        | Restored       |
+| -------------- | -------------- |
+| `_gitignore`   | `.gitignore`   |
+| `_npmrc`       | `.npmrc`       |
 | `_env.example` | `.env.example` |
 
 ### 6.3 Binary detection
@@ -286,13 +286,13 @@ MUST contain no leftover known-token placeholders.
 
 `buildSubstitutions` produces, for one scaffold:
 
-| Token | Value |
-|---|---|
-| `__APP_NAME__` | the normalized (npm-safe) slug |
-| `__DISPLAY_NAME__` | the original trimmed user-supplied name |
-| `__SDK_VERSION__` | the pinned `@dignetwork/dig-sdk` version specifier (§7.5) |
-| `__OUTPUT_DIR__` | `meta.outputDir` |
-| `__BUILD_COMMAND__` | `meta.buildCommand` |
+| Token               | Value                                                     |
+| ------------------- | --------------------------------------------------------- |
+| `__APP_NAME__`      | the normalized (npm-safe) slug                            |
+| `__DISPLAY_NAME__`  | the original trimmed user-supplied name                   |
+| `__SDK_VERSION__`   | the pinned `@dignetwork/dig-sdk` version specifier (§7.5) |
+| `__OUTPUT_DIR__`    | `meta.outputDir`                                          |
+| `__BUILD_COMMAND__` | `meta.buildCommand`                                       |
 
 ### 7.5 SDK version pin
 
@@ -336,12 +336,12 @@ Every machine envelope carries `schemaVersion`.
 
 ```json
 {
-  "appName":       "my-app",          // normalized slug
-  "template":      "vite-react",       // canonical id actually used
-  "lang":          "ts",               // language actually scaffolded ("js" | "ts")
-  "requestedLang": "ts",               // language requested (may differ from lang on fallback)
-  "targetDir":     "/abs/path/my-app",
-  "nextSteps":     ["cd my-app", "npm install", "…"]
+  "appName": "my-app", // normalized slug
+  "template": "vite-react", // canonical id actually used
+  "lang": "ts", // language actually scaffolded ("js" | "ts")
+  "requestedLang": "ts", // language requested (may differ from lang on fallback)
+  "targetDir": "/abs/path/my-app",
+  "nextSteps": ["cd my-app", "npm install", "…"]
 }
 ```
 
@@ -352,7 +352,7 @@ template) the human output notes the fallback and the JSON exposes both fields.
 
 - Success (`--json`): `{ "schemaVersion": 1, "ok": true, "result": <§9.1> }` on stdout.
 - Error (`--json`): `{ "schemaVersion": 1, "ok": false, "error": { "code", "exit_code", "message",
-  "hint", …extra } }` on stdout. `code` is UPPER_SNAKE (§4.1); `extra` carries structured fields
+"hint", …extra } }` on stdout. `code` is UPPER_SNAKE (§4.1); `extra` carries structured fields
   (e.g. `template` for `UNKNOWN_TEMPLATE`) rather than flattening them into prose.
 - `--version --json`: `{ "schemaVersion": 1, "version": "<v>" }`.
 - `--list-templates --json`: `{ "schemaVersion": 1, "templates": [<§9.4>] }`.
@@ -560,7 +560,7 @@ The filesystem glue over the pure core, run against a real `nft-collection` proj
 ## 13. Security properties
 
 - **No secret material is shipped.** Wallet templates ship only an empty `VITE_WALLETCONNECT_
-  PROJECT_ID=` placeholder in `.env.example`; the real project id is provided by the user and never
+PROJECT_ID=` placeholder in `.env.example`; the real project id is provided by the user and never
   committed. `.gitignore` (restored from `_gitignore`) excludes `.env` / `.env.local`.
 - **No spends at scaffold time.** Minting/deploying are explicit, wallet-signed actions the user
   triggers later; scaffolding never holds keys, signs, or broadcasts.

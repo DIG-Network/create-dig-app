@@ -1,4 +1,4 @@
-# __DISPLAY_NAME__
+# **DISPLAY_NAME**
 
 A React + **TypeScript** app (Vite) for the **DIG Network** — deployed to a network no host can
 read, change, or take down.
@@ -9,7 +9,7 @@ Scaffolded with `npm create dig-app` (template: `vite-react`, language: TypeScri
 
 Scaffolding, building, and previewing cost **nothing**. There is **no mint, no chain, and no spend**
 when you create or run this project — you only spend **$DIG** the moment you publish a
-capsule with `digstore deploy`. *Iterate for free, publish when it's ready.*
+capsule with `digstore deploy`. _Iterate for free, publish when it's ready._
 
 ## Develop
 

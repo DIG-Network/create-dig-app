@@ -86,7 +86,11 @@ test("itemsFromImages keeps the stem when it cannot be humanized", () => {
 // ---- capsuleResourceUris with an explicit root ---------------------------
 
 test("capsuleResourceUris embeds the root hash when one is given", () => {
-  const { urn, https, uris } = capsuleResourceUris({ storeId: "store123", root: "root456", resource: "/images/a.png" });
+  const { urn, https, uris } = capsuleResourceUris({
+    storeId: "store123",
+    root: "root456",
+    resource: "/images/a.png",
+  });
   assert.match(urn, /^urn:dig:chia:store123:root456\/images\/a\.png$/);
   assert.doesNotMatch(urn, /dig:\/\//, "the URN carries no dig:// prefix (the #686 double-scheme bug)");
   assert.match(https, /^https:\/\/store123\./);
@@ -102,7 +106,10 @@ test("validateMetadata rejects a non-object value", () => {
 });
 
 test("validateMetadata rejects attributes that are not an array", () => {
-  assert.throws(() => validateMetadata({ format: "CHIP-0007", name: "x", attributes: "oops" }), /attributes must be an array/i);
+  assert.throws(
+    () => validateMetadata({ format: "CHIP-0007", name: "x", attributes: "oops" }),
+    /attributes must be an array/i,
+  );
 });
 
 test("validateMetadata rejects an attribute that is not {trait_type,value} strings", () => {

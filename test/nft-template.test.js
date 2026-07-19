@@ -110,7 +110,10 @@ test("vendored tool generates + validates a real collection (subprocess, exit 0)
     assert.ok(metaFiles.length >= 1, "generated metadata files");
     assert.ok(existsSync(join(dest, "items.json")), "generated items.json manifest");
     // The license file the chosen license id maps to was written.
-    assert.ok(readdirSync(join(dest, "licenses")).some((f) => f.startsWith("LICENSE-")), "wrote a license");
+    assert.ok(
+      readdirSync(join(dest, "licenses")).some((f) => f.startsWith("LICENSE-")),
+      "wrote a license",
+    );
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -175,7 +178,10 @@ test("vendored tool output is byte-identical to the canonical lib (anti-drift)",
     // The template derives id from name; mirror that.
     collection.id =
       col.id ||
-      String(col.name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+      String(col.name)
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
     const items = parseTraitsCsv(readFileSync(join(dest, "traits.csv"), "utf8"));
     const expected = generateItemMetadata(collection, items);
 

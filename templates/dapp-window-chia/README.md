@@ -1,4 +1,4 @@
-# __DISPLAY_NAME__
+# **DISPLAY_NAME**
 
 A wallet-wired dapp for the **DIG Network** — connects the injected Chia wallet (`window.chia`) via
 `@dignetwork/dig-sdk`'s `ChiaProvider`, with a WalletConnect → Sage fallback.
@@ -9,7 +9,7 @@ Scaffolded with `npm create dig-app` (template: `dapp-window-chia`).
 
 Scaffolding, building, previewing, and connecting a wallet cost **nothing**. There is **no mint, no
 chain, and no spend** when you create or run this project — you only spend **$DIG** the
-moment you publish a capsule with `digstore deploy`. *Iterate for free, publish when it's ready.*
+moment you publish a capsule with `digstore deploy`. _Iterate for free, publish when it's ready._
 
 ## How the wallet is wired
 

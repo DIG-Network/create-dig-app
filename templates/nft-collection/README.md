@@ -1,4 +1,4 @@
-# __DISPLAY_NAME__
+# **DISPLAY_NAME**
 
 An **NFT collection** on the **DIG Network** — your art, its CHIP-0007 metadata, and its license, all
 in one **capsule** on Chia. Scaffolded with `npm create dig-app` (template: `nft-collection`).
@@ -62,16 +62,16 @@ npm run validate            # re-checks the CHIP-0007 schema + every data/metada
 
 Everything shared by all items lives here:
 
-| Field | Meaning |
-|---|---|
-| `name` | The collection name. Its slug becomes the CHIP-0007 `collection.id` (stable across items). |
-| `description` | Shown on the collection page. |
-| `royalty_address` | The Chia address that receives royalties on secondary sales. |
-| `royalty_basis_points` | Royalty in basis points (e.g. `300` = 3%). |
-| `did` | Optional creator DID (`did:chia:…`) for a verified-creator collection. |
-| `license` | One of `cc0`, `cc-by-4.0`, `all-rights-reserved`, `commercial`. |
-| `icon` / `banner` | Paths to the collection art under `assets/`. |
-| `attributes` | Collection-level traits (website, twitter, …) — added to every item's `collection` block. |
+| Field                  | Meaning                                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------------------ |
+| `name`                 | The collection name. Its slug becomes the CHIP-0007 `collection.id` (stable across items). |
+| `description`          | Shown on the collection page.                                                              |
+| `royalty_address`      | The Chia address that receives royalties on secondary sales.                               |
+| `royalty_basis_points` | Royalty in basis points (e.g. `300` = 3%).                                                 |
+| `did`                  | Optional creator DID (`did:chia:…`) for a verified-creator collection.                     |
+| `license`              | One of `cc0`, `cc-by-4.0`, `all-rights-reserved`, `commercial`.                            |
+| `icon` / `banner`      | Paths to the collection art under `assets/`.                                               |
+| `attributes`           | Collection-level traits (website, twitter, …) — added to every item's `collection` block.  |
 
 ### Per-item names + traits
 

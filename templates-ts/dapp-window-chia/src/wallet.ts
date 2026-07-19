@@ -10,11 +10,7 @@
 // WalletConnectOptions (the options the SDK's WalletConnectTransport consumes) are fully typed, so
 // no `@types/*` package is needed for the SDK.
 
-import {
-  ChiaProvider,
-  type ConnectOptions,
-  type WalletConnectOptions,
-} from "@dignetwork/dig-sdk";
+import { ChiaProvider, type ConnectOptions, type WalletConnectOptions } from "@dignetwork/dig-sdk";
 
 // WalletConnect Cloud / Reown project id, read from the build-time env (see .env.example) and typed
 // via src/vite-env.d.ts. When set, it enables the WalletConnect → Sage fallback for browsers without

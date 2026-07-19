@@ -208,10 +208,7 @@ test("wallet TS templates scaffold the WalletConnect→Sage path (dep + env + ty
       // .env.example carries the projectId env (placeholder only) and the code reads it.
       assert.ok(existsSync(join(dest, ".env.example")), `${name} (ts) ships .env.example`);
       assert.match(read(dest, ".env.example"), new RegExp(`^${WC_ENV_VAR}=`, "m"));
-      assert.ok(
-        grepTree(dest, `import.meta.env.${WC_ENV_VAR}`),
-        `${name} (ts) reads ${WC_ENV_VAR}`,
-      );
+      assert.ok(grepTree(dest, `import.meta.env.${WC_ENV_VAR}`), `${name} (ts) reads ${WC_ENV_VAR}`);
 
       // ChiaProvider auto mode + the SDK's WalletConnectOptions type drive WalletConnectTransport.
       assert.ok(grepTree(dest, `mode: "auto"`), `${name} (ts) uses auto mode`);
@@ -238,10 +235,7 @@ test("vite TS templates ship a vite-env.d.ts", () => {
     try {
       const dest = join(root, "app");
       scaffold({ appName: "app", template: name, lang: "ts", targetDir: dest });
-      assert.ok(
-        existsSync(join(dest, "src", "vite-env.d.ts")),
-        `${name} ships src/vite-env.d.ts`,
-      );
+      assert.ok(existsSync(join(dest, "src", "vite-env.d.ts")), `${name} ships src/vite-env.d.ts`);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

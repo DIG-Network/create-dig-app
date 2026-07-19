@@ -1,4 +1,4 @@
-# __DISPLAY_NAME__
+# **DISPLAY_NAME**
 
 A wallet-connected **NFT drop** for the **DIG Network** — a mint page wired to
 `@dignetwork/dig-sdk` (`ChiaProvider` for the wallet, `@dignetwork/dig-sdk/spend` for the canonical

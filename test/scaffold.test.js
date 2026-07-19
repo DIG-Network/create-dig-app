@@ -40,14 +40,10 @@ function read(dir, ...parts) {
 
 test("exposes the six committed templates", () => {
   const names = templateNames().sort();
-  assert.deepEqual(names, [
-    "dapp-window-chia",
-    "next-static",
-    "nft-collection",
-    "nft-drop",
-    "static-site",
-    "vite-react",
-  ].sort());
+  assert.deepEqual(
+    names,
+    ["dapp-window-chia", "next-static", "nft-collection", "nft-drop", "static-site", "vite-react"].sort(),
+  );
 });
 
 test("the legacy `static` id is a hidden alias for `static-site` (back-compat)", () => {
@@ -344,7 +340,11 @@ test("wallet README documents the WalletConnect projectId (Reown / WalletConnect
       scaffold({ appName: "wallet app", template: name, targetDir: dest });
       const readme = read(dest, "README.md");
       assert.match(readme, new RegExp(WC_ENV_VAR), `${name} README names ${WC_ENV_VAR}`);
-      assert.match(readme, /reown|walletconnect cloud/i, `${name} README points at Reown / WalletConnect Cloud`);
+      assert.match(
+        readme,
+        /reown|walletconnect cloud/i,
+        `${name} README points at Reown / WalletConnect Cloud`,
+      );
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
@@ -393,7 +393,10 @@ test("scaffold refuses a non-empty target dir", () => {
     const dest = join(root, "occupied");
     mkdirSync(dest, { recursive: true });
     writeFileSync(join(dest, "keep.txt"), "hi");
-    assert.throws(() => scaffold({ appName: "x", template: "static-site", targetDir: dest }), /not empty|exists/i);
+    assert.throws(
+      () => scaffold({ appName: "x", template: "static-site", targetDir: dest }),
+      /not empty|exists/i,
+    );
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -403,10 +406,7 @@ test("scaffold rejects an unknown template before writing anything", () => {
   const root = freshDir();
   try {
     const dest = join(root, "app");
-    assert.throws(
-      () => scaffold({ appName: "x", template: "nope", targetDir: dest }),
-      UnknownTemplateError,
-    );
+    assert.throws(() => scaffold({ appName: "x", template: "nope", targetDir: dest }), UnknownTemplateError);
     assert.ok(!existsSync(dest), "nothing written on invalid template");
   } finally {
     rmSync(root, { recursive: true, force: true });

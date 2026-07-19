@@ -45,7 +45,10 @@ test("metadata_hash equals sha256 of the canonical JSON bytes (pinned vector)", 
   const md = buildChip0007Metadata({ name: "Item" });
   const json = canonicalJson(md);
   // sha256("{\"format\":\"CHIP-0007\",\"name\":\"Item\"}") — verified against node crypto.
-  assert.equal(sha256Hex(Buffer.from(json, "utf8")), "0cadfb8e3eb96eab70e15592b8b046f3ad376619d4f71c19650dd9f8fd481c78");
+  assert.equal(
+    sha256Hex(Buffer.from(json, "utf8")),
+    "0cadfb8e3eb96eab70e15592b8b046f3ad376619d4f71c19650dd9f8fd481c78",
+  );
   assert.equal(
     sha256Hex(Buffer.from(json, "utf8")),
     createHash("sha256").update(Buffer.from(json, "utf8")).digest("hex"),
@@ -84,7 +87,10 @@ test("optional fields are omitted, not nulled (description/collection/series/min
 });
 
 test("sensitive_content is omitted when false and present when true", () => {
-  assert.doesNotMatch(canonicalJson(buildChip0007Metadata({ name: "x", sensitive_content: false })), /sensitive_content/);
+  assert.doesNotMatch(
+    canonicalJson(buildChip0007Metadata({ name: "x", sensitive_content: false })),
+    /sensitive_content/,
+  );
   assert.match(
     canonicalJson(buildChip0007Metadata({ name: "x", sensitive_content: true })),
     /"sensitive_content":true/,
@@ -106,7 +112,7 @@ test("attribute values are coerced to strings (byte-stable hashing)", () => {
 // (emit-side twin of digstore's #187 / chip35_dl_coin's own fix)
 // ---------------------------------------------------------------------------
 
-test("collection attributes serialize with CHIP-0007's \"type\", not \"trait_type\"", () => {
+test('collection attributes serialize with CHIP-0007\'s "type", not "trait_type"', () => {
   const md = buildChip0007Metadata({
     name: "x",
     collection: { id: "c", name: "C", attributes: [{ type: "icon", value: "https://dig.net/icon.png" }] },
@@ -178,7 +184,8 @@ test("mergeItem keeps per-item traits distinct from collection-level traits", ()
 // ---------------------------------------------------------------------------
 
 test("parseTraitsCsv reads name/file/description columns + the rest as traits", () => {
-  const csv = "name,file,description,Background,Hat\nFrog #1,frog1.png,a frog,Blue,Top\nFrog #2,frog2.png,,Green,\n";
+  const csv =
+    "name,file,description,Background,Hat\nFrog #1,frog1.png,a frog,Blue,Top\nFrog #2,frog2.png,,Green,\n";
   const items = parseTraitsCsv(csv);
   assert.equal(items.length, 2);
   assert.equal(items[0].name, "Frog #1");
@@ -205,7 +212,9 @@ test("parseTraitsCsv requires a name column", () => {
 });
 
 test("parseTraitsJson accepts an array, an {items:[...]} envelope, and normalizes attributes", () => {
-  const arr = parseTraitsJson(JSON.stringify([{ name: "A", file: "a.png", attributes: [{ traitType: "X", value: "1" }] }]));
+  const arr = parseTraitsJson(
+    JSON.stringify([{ name: "A", file: "a.png", attributes: [{ traitType: "X", value: "1" }] }]),
+  );
   assert.equal(arr[0].name, "A");
   assert.deepEqual(arr[0].attributes, [{ trait_type: "X", value: "1" }]);
   const env = parseTraitsJson(JSON.stringify({ items: [{ name: "B", Color: "Red" }] }));
@@ -220,7 +229,10 @@ test("parseTraitsJson accepts an array, an {items:[...]} envelope, and normalize
 test("itemsFromImages derives a name from each filename and matches the file", () => {
   const items = itemsFromImages(["frog-1.png", "Frog 2.PNG", "art_03.jpeg"]);
   assert.equal(items.length, 3);
-  assert.deepEqual(items.map((i) => i.file), ["frog-1.png", "Frog 2.PNG", "art_03.jpeg"]);
+  assert.deepEqual(
+    items.map((i) => i.file),
+    ["frog-1.png", "Frog 2.PNG", "art_03.jpeg"],
+  );
   // names are humanized from the stem
   assert.equal(items[0].name, "Frog 1");
   assert.equal(items[1].name, "Frog 2");

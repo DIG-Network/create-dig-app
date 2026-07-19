@@ -6,10 +6,10 @@
   --error: #dc2626;
 
   /* DIG brand accent — violet -> magenta (SYSTEM.md visual theme; matches dig.net/hub/status). */
-  --dig-violet: #5800D6;
-  --dig-magenta: #FF00DE;
+  --dig-violet: #5800d6;
+  --dig-magenta: #ff00de;
   --accent: var(--dig-violet);
-  --grad-brand: linear-gradient(115deg, #5800D6 0%, #FF00DE 100%);
+  --grad-brand: linear-gradient(115deg, #5800d6 0%, #ff00de 100%);
 
   /* DIG brand fonts — named first, system stack as the offline/no-fetch fallback so a scaffolded
      capsule never depends on an external font host (keeps the site self-contained + offline-safe). */
@@ -17,9 +17,15 @@
   --dig-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) {
-  :root { --fg: #e2e8f0; --muted: #94a3b8; --bg: #0b1120; }
+  :root {
+    --fg: #e2e8f0;
+    --muted: #94a3b8;
+    --bg: #0b1120;
+  }
 }
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 body {
   margin: 0;
   min-height: 100vh;
@@ -29,7 +35,10 @@ body {
   color: var(--fg);
   background: var(--bg);
 }
-.wrap { max-width: 42rem; padding: 2rem; }
+.wrap {
+  max-width: 42rem;
+  padding: 2rem;
+}
 h1 {
   font-size: 2.25rem;
   margin: 0 0 0.5rem;
@@ -39,8 +48,12 @@ h1 {
   background-clip: text;
   color: transparent;
 }
-.muted { color: var(--muted); }
-.error { color: var(--error); }
+.muted {
+  color: var(--muted);
+}
+.error {
+  color: var(--error);
+}
 button {
   font: inherit;
   padding: 0.6rem 1.1rem;
@@ -50,7 +63,10 @@ button {
   color: white;
   cursor: pointer;
 }
-button:disabled { opacity: 0.6; cursor: default; }
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
 .card {
   margin: 1rem 0;
   padding: 1rem;
@@ -59,8 +75,16 @@ button:disabled { opacity: 0.6; cursor: default; }
   display: grid;
   gap: 0.5rem;
 }
-.row { display: flex; gap: 0.75rem; align-items: baseline; flex-wrap: wrap; }
-code { font-family: var(--dig-mono); word-break: break-all; }
+.row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+code {
+  font-family: var(--dig-mono);
+  word-break: break-all;
+}
 pre {
   font-family: var(--dig-mono);
   margin-top: 1.5rem;

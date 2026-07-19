@@ -3,8 +3,8 @@ export default function Home() {
     <main className="wrap">
       <h1>__DISPLAY_NAME__</h1>
       <p>
-        A Next.js static-export site on the <strong>DIG Network</strong> — served from a network no
-        host can read, change, or take down.
+        A Next.js static-export site on the <strong>DIG Network</strong> — served from a network no host can
+        read, change, or take down.
       </p>
       <p className="muted">
         Build and preview for <strong>free</strong>. You only spend $DIG when you publish.
