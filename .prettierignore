@@ -1,0 +1,11 @@
+dist
+coverage
+package-lock.json
+CHANGELOG.md
+
+# Template markdown carries intentional __TOKEN__ scaffolding placeholders
+# (consumed verbatim by lib/substitute.js) that prettier's markdown formatter
+# corrupts (e.g. `# __DISPLAY_NAME__` -> `# **DISPLAY_NAME**`), breaking
+# substitution for every scaffolded project. Never format it.
+templates/**/*.md
+templates-ts/**/*.md

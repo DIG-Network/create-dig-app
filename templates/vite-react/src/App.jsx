@@ -3,8 +3,8 @@ export default function App() {
     <main className="wrap">
       <h1>__DISPLAY_NAME__</h1>
       <p>
-        A React app on the <strong>DIG Network</strong> — served from a network no host can read,
-        change, or take down.
+        A React app on the <strong>DIG Network</strong> — served from a network no host can read, change, or
+        take down.
       </p>
       <p className="muted">
         Build and preview for <strong>free</strong>. You only spend $DIG when you publish.

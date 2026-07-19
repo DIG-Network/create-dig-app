@@ -15,7 +15,7 @@ name: publish-npm
 # to re-trip a release — see CLAUDE.md flaky-test-management, #489/#488).
 on:
   push:
-    tags: ['v*']
+    tags: ["v*"]
   release:
     types: [published]
   workflow_dispatch: {}

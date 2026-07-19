@@ -22,7 +22,12 @@ function captureStreams() {
 
 test("run --version --json emits a structured version envelope to stdout", async () => {
   const cap = captureStreams();
-  const code = await run(["--version", "--json"], { out: cap.out, err: cap.err, log: cap.log, version: "1.2.3" });
+  const code = await run(["--version", "--json"], {
+    out: cap.out,
+    err: cap.err,
+    log: cap.log,
+    version: "1.2.3",
+  });
   assert.equal(code, EXIT.SUCCESS);
   const doc = JSON.parse(cap.outText());
   assert.equal(doc.version, "1.2.3");

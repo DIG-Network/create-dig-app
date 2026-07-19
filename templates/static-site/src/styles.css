@@ -6,10 +6,10 @@
   --error: #dc2626;
 
   /* DIG brand accent — violet -> magenta (SYSTEM.md visual theme; matches dig.net/hub/status). */
-  --dig-violet: #5800D6;
-  --dig-magenta: #FF00DE;
+  --dig-violet: #5800d6;
+  --dig-magenta: #ff00de;
   --accent: var(--dig-violet);
-  --grad-brand: linear-gradient(115deg, #5800D6 0%, #FF00DE 100%);
+  --grad-brand: linear-gradient(115deg, #5800d6 0%, #ff00de 100%);
 
   /* DIG brand fonts — named first, system stack as the offline/no-fetch fallback so a scaffolded
      capsule never depends on an external font host (keeps the site self-contained + offline-safe). */
@@ -17,9 +17,15 @@
   --dig-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) {
-  :root { --fg: #e2e8f0; --muted: #94a3b8; --bg: #0b1120; }
+  :root {
+    --fg: #e2e8f0;
+    --muted: #94a3b8;
+    --bg: #0b1120;
+  }
 }
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 body {
   margin: 0;
   min-height: 100vh;
@@ -29,7 +35,10 @@ body {
   color: var(--fg);
   background: var(--bg);
 }
-main { max-width: 40rem; padding: 2rem; }
+main {
+  max-width: 40rem;
+  padding: 2rem;
+}
 h1 {
   font-size: 2.25rem;
   margin: 0 0 0.5rem;
@@ -39,7 +48,9 @@ h1 {
   background-clip: text;
   color: transparent;
 }
-.muted { color: var(--muted); }
+.muted {
+  color: var(--muted);
+}
 pre {
   font-family: var(--dig-mono);
   background: rgba(127, 127, 127, 0.12);

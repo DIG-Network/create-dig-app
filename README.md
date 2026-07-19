@@ -45,7 +45,7 @@ types** — `ChiaProvider`, `ConnectOptions`, and friends are fully typed straig
 
 **Scaffolding, building, and previewing cost nothing.** Creating a project does **not** mint,
 touch the chain, or spend any funds. You spend **$DIG** only when you publish a **capsule** with
-`digstore deploy`. *Iterate for free, publish when it's ready.*
+`digstore deploy`. _Iterate for free, publish when it's ready._
 
 ```sh
 digstore dev      # preview on the real chia:// read path — FREE, no chain, no spend
@@ -57,16 +57,16 @@ human name so it is also reachable at `<your-name>.on.dig.net` (a pay-to-registe
 
 ## Templates
 
-| Template | What you get | Wallet wired | Languages |
-|---|---|---|---|
-| `static-site` | Plain HTML/CSS/JS — zero build step, the lightest way to ship a site. | — | JS |
-| `vite-react` | A React SPA built with Vite — the fast default for an app frontend. | — | JS · TS |
-| `next-static` | Next.js exported to static files (`output: 'export'`), deployable as a capsule. | — | JS · TS |
-| `nft-drop` | A wallet-connected NFT mint page (`ChiaProvider` + the canonical CHIP-0035 spend builder). | yes | JS · TS |
-| `nft-collection` | An NFT collection workspace — art + CHIP-0007 metadata/license tooling for `digstore collection mint`. | yes | JS |
-| `dapp-window-chia` | A dapp wired to a Chia wallet via `ChiaProvider` — injected `window.chia`, or Sage over WalletConnect. | yes | JS · TS |
+| Template           | What you get                                                                                           | Wallet wired | Languages |
+| ------------------ | ------------------------------------------------------------------------------------------------------ | ------------ | --------- |
+| `static-site`      | Plain HTML/CSS/JS — zero build step, the lightest way to ship a site.                                  | —            | JS        |
+| `vite-react`       | A React SPA built with Vite — the fast default for an app frontend.                                    | —            | JS · TS   |
+| `next-static`      | Next.js exported to static files (`output: 'export'`), deployable as a capsule.                        | —            | JS · TS   |
+| `nft-drop`         | A wallet-connected NFT mint page (`ChiaProvider` + the canonical CHIP-0035 spend builder).             | yes          | JS · TS   |
+| `nft-collection`   | An NFT collection workspace — art + CHIP-0007 metadata/license tooling for `digstore collection mint`. | yes          | JS        |
+| `dapp-window-chia` | A dapp wired to a Chia wallet via `ChiaProvider` — injected `window.chia`, or Sage over WalletConnect. | yes          | JS · TS   |
 
-The **`nft-collection`** template is a *collection workspace*, not a single page: drop your art in
+The **`nft-collection`** template is a _collection workspace_, not a single page: drop your art in
 `images/`, describe the set once in `collection.json`, and its dependency-free tooling
 (`npm run generate` / `npm run validate`) emits the canonical **CHIP-0007** metadata + the
 `items.json` manifest that `digstore collection mint` consumes — byte-for-byte the same shape the
@@ -84,11 +84,11 @@ scaffold time** — minting is an explicit, wallet-signed action a user triggers
 
 The same **Connect** button works in both worlds, in both JS and TS:
 
-| | Injected (DIG Browser / extension) | WalletConnect → Sage (any browser) |
-|---|---|---|
-| When | `window.chia` is present | no injected wallet found |
-| Setup | none | set a free **projectId** (env) |
-| UX | instant connect | pairing link / QR to approve in Sage |
+|       | Injected (DIG Browser / extension) | WalletConnect → Sage (any browser)   |
+| ----- | ---------------------------------- | ------------------------------------ |
+| When  | `window.chia` is present           | no injected wallet found             |
+| Setup | none                               | set a free **projectId** (env)       |
+| UX    | instant connect                    | pairing link / QR to approve in Sage |
 
 To enable the Sage fallback, the wallet templates ship `@walletconnect/sign-client` (the SDK's
 optional WC peer dep) as a dependency and read a **project id** from the build-time env:
@@ -120,18 +120,18 @@ npm create dig-app@latest
 npm create dig-app@latest -- --help
 ```
 
-| Option | Description |
-|---|---|
-| `<name>` | Project directory + npm package name (slugified to be npm-safe). |
-| `-t, --template <t>` | One of: `static-site`, `vite-react`, `next-static`, `nft-drop`, `nft-collection`, `dapp-window-chia`. |
-| `--typescript`, `--ts` | Scaffold the TypeScript variant (where available). |
-| `--javascript`, `--js` | Scaffold the JavaScript variant (the default). |
-| `--lang <js\|ts>` | Same as the language flags above. |
-| `--json` | Emit one structured result object on stdout; route human prose to stderr (for scripts/agents). |
-| `--list-templates` | List the available templates (pair with `--json` for machine-readable output). |
-| `--help-json` | Print the full flag/template tree + exit-code table as JSON. |
-| `-h, --help` | Show usage and the template list. |
-| `-v, --version` | Print the version. |
+| Option                 | Description                                                                                           |
+| ---------------------- | ----------------------------------------------------------------------------------------------------- |
+| `<name>`               | Project directory + npm package name (slugified to be npm-safe).                                      |
+| `-t, --template <t>`   | One of: `static-site`, `vite-react`, `next-static`, `nft-drop`, `nft-collection`, `dapp-window-chia`. |
+| `--typescript`, `--ts` | Scaffold the TypeScript variant (where available).                                                    |
+| `--javascript`, `--js` | Scaffold the JavaScript variant (the default).                                                        |
+| `--lang <js\|ts>`      | Same as the language flags above.                                                                     |
+| `--json`               | Emit one structured result object on stdout; route human prose to stderr (for scripts/agents).        |
+| `--list-templates`     | List the available templates (pair with `--json` for machine-readable output).                        |
+| `--help-json`          | Print the full flag/template tree + exit-code table as JSON.                                          |
+| `-h, --help`           | Show usage and the template list.                                                                     |
+| `-v, --version`        | Print the version.                                                                                    |
 
 > The `--` before the flags is npm's `npm create` argument separator — it forwards the rest to
 > `create-dig-app`. With `npx create-dig-app` / `pnpm create dig-app` you can drop it.
@@ -177,26 +177,34 @@ On failure, `--json` emits a structured error envelope with a **stable, UPPER_SN
 derived from the prose), the matching exit code, and an actionable hint:
 
 ```json
-{"schemaVersion":1,"ok":false,"error":{"code":"UNKNOWN_TEMPLATE","exit_code":3,
-  "message":"Unknown template \"svelte\". Available: …","hint":"Run with --list-templates …",
-  "template":"svelte"}}
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "error": {
+    "code": "UNKNOWN_TEMPLATE",
+    "exit_code": 3,
+    "message": "Unknown template \"svelte\". Available: …",
+    "hint": "Run with --list-templates …",
+    "template": "svelte"
+  }
+}
 ```
 
 ### Exit codes
 
 A differentiated, stable exit-code table (also emitted by `--help-json`) so a script can branch on
-the *kind* of failure:
+the _kind_ of failure:
 
-| Code | Meaning |
-|---|---|
-| `0` | success |
-| `1` | unexpected internal error |
-| `2` | usage error (bad/unknown option or malformed arguments) |
-| `3` | unknown template id |
-| `4` | target directory exists and is not empty |
-| `5` | required arguments missing in non-interactive mode |
-| `6` | bundled template files are missing (packaging bug) |
-| `7` | app name is not usable |
+| Code | Meaning                                                 |
+| ---- | ------------------------------------------------------- |
+| `0`  | success                                                 |
+| `1`  | unexpected internal error                               |
+| `2`  | usage error (bad/unknown option or malformed arguments) |
+| `3`  | unknown template id                                     |
+| `4`  | target directory exists and is not empty                |
+| `5`  | required arguments missing in non-interactive mode      |
+| `6`  | bundled template files are missing (packaging bug)      |
+| `7`  | app name is not usable                                  |
 
 ## Develop on create-dig-app
 

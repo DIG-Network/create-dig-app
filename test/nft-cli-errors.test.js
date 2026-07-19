@@ -102,10 +102,7 @@ test("generateMetadata throws when a traits item references a missing image", ()
   const root = freshProject();
   try {
     writeFileSync(join(root, "images", "a.png"), PNG_1x1);
-    writeFileSync(
-      join(root, "traits.json"),
-      JSON.stringify([{ name: "Ghost", file: "does-not-exist.png" }]),
-    );
+    writeFileSync(join(root, "traits.json"), JSON.stringify([{ name: "Ghost", file: "does-not-exist.png" }]));
     assert.throws(() => generateMetadata(root), /missing image/i);
   } finally {
     rmSync(root, { recursive: true, force: true });

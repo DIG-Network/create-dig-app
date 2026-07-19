@@ -67,7 +67,11 @@ for (const name of templateNames()) {
         const dest = join(root, "app");
         scaffold({ appName: "Brand App", template: name, lang, targetDir: dest });
         const text = treeText(dest);
-        assert.doesNotMatch(text, /dig:\/\//, "no dig:// in scaffolded files (NFT resources use the bare urn:dig: form)");
+        assert.doesNotMatch(
+          text,
+          /dig:\/\//,
+          "no dig:// in scaffolded files (NFT resources use the bare urn:dig: form)",
+        );
       } finally {
         rmSync(root, { recursive: true, force: true });
       }

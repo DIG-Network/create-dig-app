@@ -44,13 +44,13 @@ export default function App() {
     <main className="wrap">
       <h1>__DISPLAY_NAME__</h1>
       <p>
-        An NFT drop on the <strong>DIG Network</strong> — mint NFTs whose media can live in a DIG
-        capsule, truly permanent on Chia.
+        An NFT drop on the <strong>DIG Network</strong> — mint NFTs whose media can live in a DIG capsule,
+        truly permanent on Chia.
       </p>
       <p className="muted">
-        Building and previewing this mint page are <strong>free</strong> — no mint, no chain, no spend
-        when you scaffold or run it. Publishing the page is one <code>digstore deploy</code> ($DIG).
-        Minting the NFTs is a separate, wallet-signed on-chain action a visitor triggers.
+        Building and previewing this mint page are <strong>free</strong> — no mint, no chain, no spend when
+        you scaffold or run it. Publishing the page is one <code>digstore deploy</code> ($DIG). Minting the
+        NFTs is a separate, wallet-signed on-chain action a visitor triggers.
       </p>
 
       {address ? (

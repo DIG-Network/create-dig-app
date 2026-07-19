@@ -8,7 +8,5 @@
   "license": "cc0",
   "icon": "assets/icon.svg",
   "banner": "assets/banner.svg",
-  "attributes": [
-    { "type": "Website", "value": "https://example.on.dig.net" }
-  ]
+  "attributes": [{ "type": "Website", "value": "https://example.on.dig.net" }]
 }

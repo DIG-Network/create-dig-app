@@ -23,14 +23,7 @@
 //   hash:        metadata_hash = sha256(canonical_json_bytes); data/license_hash = sha256(bytes)
 
 import { createHash } from "node:crypto";
-import {
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  readdirSync,
-  statSync,
-  writeFileSync,
-} from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { basename, dirname, extname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -52,7 +45,10 @@ function attrValue(v) {
 
 function normalizeAttributes(attrs) {
   return (attrs ?? [])
-    .map((a) => ({ trait_type: String(a?.trait_type ?? a?.traitType ?? "").trim(), value: attrValue(a?.value) }))
+    .map((a) => ({
+      trait_type: String(a?.trait_type ?? a?.traitType ?? "").trim(),
+      value: attrValue(a?.value),
+    }))
     .filter((a) => a.trait_type !== "");
 }
 
@@ -84,7 +80,8 @@ function buildChip0007Metadata(input) {
   if (attributes.length > 0) md.attributes = attributes;
   if (input?.series_number != null) md.series_number = Number(input.series_number);
   if (input?.series_total != null) md.series_total = Number(input.series_total);
-  if (input?.minting_tool != null && String(input.minting_tool) !== "") md.minting_tool = String(input.minting_tool);
+  if (input?.minting_tool != null && String(input.minting_tool) !== "")
+    md.minting_tool = String(input.minting_tool);
   return md;
 }
 
@@ -119,7 +116,9 @@ const FILE_KEYS = new Set(["file", "filename", "image", "media", "asset"]);
 const DESC_KEYS = new Set(["description", "desc"]);
 
 function classifyKey(key) {
-  const k = String(key ?? "").trim().toLowerCase();
+  const k = String(key ?? "")
+    .trim()
+    .toLowerCase();
   if (NAME_KEYS.has(k)) return "name";
   if (FILE_KEYS.has(k)) return "file";
   if (DESC_KEYS.has(k)) return "description";
@@ -134,58 +133,79 @@ function splitCsvLine(line) {
     const ch = line[i];
     if (inQuotes) {
       if (ch === '"') {
-        if (line[i + 1] === '"') { cur += '"'; i++; }
-        else inQuotes = false;
+        if (line[i + 1] === '"') {
+          cur += '"';
+          i++;
+        } else inQuotes = false;
       } else cur += ch;
     } else if (ch === '"') inQuotes = true;
-    else if (ch === ",") { out.push(cur); cur = ""; }
-    else cur += ch;
+    else if (ch === ",") {
+      out.push(cur);
+      cur = "";
+    } else cur += ch;
   }
   out.push(cur);
   return out.map((c) => c.trim());
 }
 
 function recordToItem(rec) {
-  let name = "", description, file;
+  let name = "",
+    description,
+    file;
   const attributes = [];
   for (const [col, raw] of Object.entries(rec)) {
     const role = classifyKey(col);
     const val = raw == null ? "" : String(raw).trim();
-    if (role === "name") { if (!name) name = val; }
-    else if (role === "file") { if (!file && val) file = val; }
-    else if (role === "description") { if (!description && val) description = val; }
-    else if (val !== "") attributes.push({ trait_type: col, value: val });
+    if (role === "name") {
+      if (!name) name = val;
+    } else if (role === "file") {
+      if (!file && val) file = val;
+    } else if (role === "description") {
+      if (!description && val) description = val;
+    } else if (val !== "") attributes.push({ trait_type: col, value: val });
   }
   if (!name) throw new Error("Every item needs a name (a `name` or `title` column).");
   return { name, description: description || undefined, file: file || undefined, attributes };
 }
 
 function parseTraitsCsv(text) {
-  const lines = String(text ?? "").split(/\r?\n/).filter((l) => l.trim() !== "");
+  const lines = String(text ?? "")
+    .split(/\r?\n/)
+    .filter((l) => l.trim() !== "");
   if (lines.length < 2) return [];
   const header = splitCsvLine(lines[0]);
   const items = [];
   for (let i = 1; i < lines.length; i++) {
     const cells = splitCsvLine(lines[i]);
     const rec = {};
-    header.forEach((h, j) => { rec[h] = cells[j] ?? ""; });
+    header.forEach((h, j) => {
+      rec[h] = cells[j] ?? "";
+    });
     items.push(recordToItem(rec));
   }
   return items;
 }
 
 function jsonObjToItem(obj) {
-  let name = "", description, file;
+  let name = "",
+    description,
+    file;
   let attributes = [];
   for (const [key, raw] of Object.entries(obj ?? {})) {
     const k = String(key).toLowerCase();
-    if (k === "attributes" && Array.isArray(raw)) { attributes = normalizeAttributes(raw); continue; }
+    if (k === "attributes" && Array.isArray(raw)) {
+      attributes = normalizeAttributes(raw);
+      continue;
+    }
     const role = classifyKey(key);
     const val = raw == null ? "" : String(raw).trim();
-    if (role === "name") { if (!name) name = val; }
-    else if (role === "file") { if (!file && val) file = val; }
-    else if (role === "description") { if (!description && val) description = val; }
-    else if (val !== "") attributes.push({ trait_type: key, value: val });
+    if (role === "name") {
+      if (!name) name = val;
+    } else if (role === "file") {
+      if (!file && val) file = val;
+    } else if (role === "description") {
+      if (!description && val) description = val;
+    } else if (val !== "") attributes.push({ trait_type: key, value: val });
   }
   if (!name) throw new Error("Every item needs a name (a `name` or `title` field).");
   return { name, description: description || undefined, file: file || undefined, attributes };
@@ -205,7 +225,9 @@ function itemsFromImages(fileNames) {
   return (fileNames ?? []).map((file) => {
     const stem = String(file).replace(/\.[^.]+$/, "");
     const name = stem
-      .replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim()
+      .replace(/[_-]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
       .replace(/\b\w/g, (c) => c.toUpperCase());
     return { name: name || stem, file, attributes: [] };
   });
@@ -214,7 +236,9 @@ function itemsFromImages(fileNames) {
 function capsuleResourceUris({ storeId, root, resource }) {
   const sid = String(storeId ?? "").trim();
   const r = String(root ?? "").trim();
-  const res = String(resource ?? "").trim().replace(/^\/+/, "");
+  const res = String(resource ?? "")
+    .trim()
+    .replace(/^\/+/, "");
   const urn = `urn:dig:chia:${sid}${r ? `:${r}` : ""}/${res}`;
   const https = `https://${sid}.${CAPSULE_HTTPS_GATEWAY}/${res}`;
   return { urn, https, uris: [urn, https] };
@@ -225,11 +249,13 @@ const LICENSES = {
     title: "CC0 1.0 — public domain dedication",
     text: ({ holder = "the creator", year = new Date().getFullYear() } = {}) =>
       [
-        "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication", "",
+        "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+        "",
         `The work associated with this NFT is dedicated to the public domain by ${holder} (${year}).`,
         "To the extent possible under law, the creator has waived all copyright and related or",
         "neighboring rights to this work. You can copy, modify, distribute and perform the work, even",
-        "for commercial purposes, all without asking permission.", "",
+        "for commercial purposes, all without asking permission.",
+        "",
         "SPDX-License-Identifier: CC0-1.0",
         "Full text: https://creativecommons.org/publicdomain/zero/1.0/legalcode",
       ].join("\n") + "\n",
@@ -238,10 +264,13 @@ const LICENSES = {
     title: "CC BY 4.0 — attribution required",
     text: ({ holder = "the creator", year = new Date().getFullYear() } = {}) =>
       [
-        "Creative Commons Attribution 4.0 International (CC BY 4.0)", "",
-        `Copyright (c) ${year} ${holder}.`, "",
+        "Creative Commons Attribution 4.0 International (CC BY 4.0)",
+        "",
+        `Copyright (c) ${year} ${holder}.`,
+        "",
         "You are free to share and adapt this work for any purpose, even commercially, provided you give",
-        "appropriate credit, provide a link to the license, and indicate if changes were made.", "",
+        "appropriate credit, provide a link to the license, and indicate if changes were made.",
+        "",
         "SPDX-License-Identifier: CC-BY-4.0",
         "Full text: https://creativecommons.org/licenses/by/4.0/legalcode",
       ].join("\n") + "\n",
@@ -250,8 +279,10 @@ const LICENSES = {
     title: "All rights reserved — no reuse without permission",
     text: ({ holder = "the creator", year = new Date().getFullYear() } = {}) =>
       [
-        "All Rights Reserved", "",
-        `Copyright (c) ${year} ${holder}. All rights reserved.`, "",
+        "All Rights Reserved",
+        "",
+        `Copyright (c) ${year} ${holder}. All rights reserved.`,
+        "",
         "No part of the work associated with this NFT may be reproduced, distributed, or transmitted in",
         "any form or by any means without the prior written permission of the copyright holder, except",
         "for the holder's own personal display of the NFT they own.",
@@ -261,12 +292,15 @@ const LICENSES = {
     title: "Limited commercial license — holder may use commercially",
     text: ({ holder = "the creator", year = new Date().getFullYear() } = {}) =>
       [
-        "Limited Commercial License (DIG Commercial 1.0)", "",
-        `Copyright (c) ${year} ${holder}.`, "",
+        "Limited Commercial License (DIG Commercial 1.0)",
+        "",
+        `Copyright (c) ${year} ${holder}.`,
+        "",
         "The verified owner of this NFT is granted a worldwide, non-exclusive license to use, reproduce,",
         "and display the associated artwork for commercial purposes, up to gross revenues of US$100,000",
         "per year attributable to the artwork. This license transfers with ownership of the NFT and",
-        "terminates on transfer. All other rights are reserved by the copyright holder.", "",
+        "terminates on transfer. All other rights are reserved by the copyright holder.",
+        "",
         "SPDX-License-Identifier: LicenseRef-DIG-Commercial-1.0",
       ].join("\n") + "\n",
   },
@@ -280,12 +314,16 @@ function licenseText(id, opts = {}) {
 }
 
 class ValidationError extends Error {
-  constructor(message) { super(message); this.name = "ValidationError"; }
+  constructor(message) {
+    super(message);
+    this.name = "ValidationError";
+  }
 }
 
 function validateMetadata(md, checks = {}) {
   if (!md || typeof md !== "object") throw new ValidationError("metadata must be an object");
-  if (md.format !== CHIP0007_FORMAT) throw new ValidationError(`format must be "${CHIP0007_FORMAT}" (got ${JSON.stringify(md.format)})`);
+  if (md.format !== CHIP0007_FORMAT)
+    throw new ValidationError(`format must be "${CHIP0007_FORMAT}" (got ${JSON.stringify(md.format)})`);
   if (typeof md.name !== "string" || md.name === "") throw new ValidationError("name is required");
   if ("attributes" in md) {
     if (!Array.isArray(md.attributes)) throw new ValidationError("attributes must be an array");
@@ -297,19 +335,27 @@ function validateMetadata(md, checks = {}) {
   }
   if ("collection" in md) {
     const c = md.collection;
-    if (typeof c?.id !== "string" || typeof c?.name !== "string") throw new ValidationError("collection must have a string id and name");
+    if (typeof c?.id !== "string" || typeof c?.name !== "string")
+      throw new ValidationError("collection must have a string id and name");
   }
   if (checks.metadata_hash != null) {
     const got = metadataHashHex(md);
-    if (got !== String(checks.metadata_hash).toLowerCase()) throw new ValidationError(`metadata_hash mismatch: computed ${got}, expected ${checks.metadata_hash}`);
+    if (got !== String(checks.metadata_hash).toLowerCase())
+      throw new ValidationError(`metadata_hash mismatch: computed ${got}, expected ${checks.metadata_hash}`);
   }
   if (checks.media?.data_hash != null && checks.media?.data_bytes != null) {
     const got = sha256Hex(checks.media.data_bytes);
-    if (got !== String(checks.media.data_hash).toLowerCase()) throw new ValidationError(`data_hash mismatch: image bytes hash to ${got}, expected ${checks.media.data_hash}`);
+    if (got !== String(checks.media.data_hash).toLowerCase())
+      throw new ValidationError(
+        `data_hash mismatch: image bytes hash to ${got}, expected ${checks.media.data_hash}`,
+      );
   }
   if (checks.license?.license_hash != null && checks.license?.license_bytes != null) {
     const got = sha256Hex(checks.license.license_bytes);
-    if (got !== String(checks.license.license_hash).toLowerCase()) throw new ValidationError(`license_hash mismatch: license bytes hash to ${got}, expected ${checks.license.license_hash}`);
+    if (got !== String(checks.license.license_hash).toLowerCase())
+      throw new ValidationError(
+        `license_hash mismatch: license bytes hash to ${got}, expected ${checks.license.license_hash}`,
+      );
   }
 }
 
@@ -332,7 +378,8 @@ function listImages(root) {
   const files = readdirSync(dir)
     .filter((f) => statSync(join(dir, f)).isFile() && IMAGE_EXT.has(extname(f).toLowerCase()))
     .sort();
-  if (files.length === 0) throw new Error("no images found in images/ — add your item art (png/jpg/gif/webp/svg) first.");
+  if (files.length === 0)
+    throw new Error("no images found in images/ — add your item art (png/jpg/gif/webp/svg) first.");
   return files;
 }
 
@@ -387,9 +434,12 @@ function generateMetadata(root, opts = {}) {
       description: item.description || undefined,
       attributes: md.attributes || [],
       media: {
-        data_uris: data.uris, data_hash: dataHash,
-        metadata_uris: meta.uris, metadata_hash: metadataHash,
-        license_uris: license ? license.uris : [], license_hash: license ? license.hash : null,
+        data_uris: data.uris,
+        data_hash: dataHash,
+        metadata_uris: meta.uris,
+        metadata_hash: metadataHash,
+        license_uris: license ? license.uris : [],
+        license_hash: license ? license.hash : null,
       },
     });
   }
@@ -402,7 +452,8 @@ function generateLicense(root) {
   const collection = loadCollection(root);
   const id = collection?.license;
   if (!id) throw new Error('collection.json has no `license` field — set one (e.g. "cc0").');
-  if (!LICENSES[id]) throw new Error(`Unknown license "${id}". Available: ${Object.keys(LICENSES).join(", ")}.`);
+  if (!LICENSES[id])
+    throw new Error(`Unknown license "${id}". Available: ${Object.keys(LICENSES).join(", ")}.`);
   const holder = collection.creator || collection.name || "the creator";
   const text = licenseText(id, { holder, year: new Date().getFullYear() });
   const licensesDir = join(root, "licenses");
@@ -423,14 +474,20 @@ function validateProject(root) {
   const manifestPath = join(root, "items.json");
   if (!existsSync(manifestPath)) throw new Error("items.json not found — run the metadata generator first.");
   const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
-  if (!Array.isArray(manifest) || manifest.length === 0) throw new Error("items.json is empty — nothing to validate.");
+  if (!Array.isArray(manifest) || manifest.length === 0)
+    throw new Error("items.json is empty — nothing to validate.");
   const metadataDir = join(root, "metadata");
-  const metaFiles = existsSync(metadataDir) ? readdirSync(metadataDir).filter((f) => f.endsWith(".json")).sort() : [];
+  const metaFiles = existsSync(metadataDir)
+    ? readdirSync(metadataDir)
+        .filter((f) => f.endsWith(".json"))
+        .sort()
+    : [];
   for (const f of metaFiles) {
     const raw = readFileSync(join(metadataDir, f), "utf8");
     const md = JSON.parse(raw);
     validateMetadata(md);
-    if (raw.trim() !== canonicalJson(md)) throw new Error(`metadata/${f} is not in canonical form (re-run the metadata generator).`);
+    if (raw.trim() !== canonicalJson(md))
+      throw new Error(`metadata/${f} is not in canonical form (re-run the metadata generator).`);
   }
   let checked = 0;
   for (const item of manifest) {
@@ -438,7 +495,8 @@ function validateProject(root) {
     const md = buildChip0007Metadata({ name: item.name, attributes: item.attributes });
     if (media.metadata_hash != null) {
       const matches = metaFiles.some(
-        (f) => metadataHashHex(JSON.parse(readFileSync(join(metadataDir, f), "utf8"))) === media.metadata_hash,
+        (f) =>
+          metadataHashHex(JSON.parse(readFileSync(join(metadataDir, f), "utf8"))) === media.metadata_hash,
       );
       if (!matches && metadataHashHex(md) !== media.metadata_hash) {
         throw new Error(`item "${item.name}": metadata_hash does not match any metadata/*.json`);
@@ -454,7 +512,9 @@ function validateProject(root) {
     if (licFile && media.license_hash != null) {
       const licPath = join(root, licFile);
       if (!existsSync(licPath)) throw new Error(`item "${item.name}": license not found at ${licFile}`);
-      validateMetadata(md, { license: { license_hash: media.license_hash, license_bytes: readFileSync(licPath) } });
+      validateMetadata(md, {
+        license: { license_hash: media.license_hash, license_bytes: readFileSync(licPath) },
+      });
     }
     checked++;
   }
@@ -493,9 +553,13 @@ function main() {
       const r = generateMetadata(ROOT, storeId ? { storeId } : {});
       console.log(`Generated ${r.count} CHIP-0007 metadata file(s) → metadata/ and the items.json manifest.`);
       if (storeId) {
-        console.log(`Baked store id ${storeId} into every URI. Next: \`npm run validate\`, then \`digstore collection mint --collection collection.json --manifest items.json\`.`);
+        console.log(
+          `Baked store id ${storeId} into every URI. Next: \`npm run validate\`, then \`digstore collection mint --collection collection.json --manifest items.json\`.`,
+        );
       } else {
-        console.log("Used the placeholder store id. After `digstore deploy` gives you the real store id, re-run `npm run generate:metadata -- --store-id <id>` to bake it in — otherwise the minted NFT keeps the placeholder. Then `npm run validate` and `digstore collection mint`.");
+        console.log(
+          "Used the placeholder store id. After `digstore deploy` gives you the real store id, re-run `npm run generate:metadata -- --store-id <id>` to bake it in — otherwise the minted NFT keeps the placeholder. Then `npm run validate` and `digstore collection mint`.",
+        );
       }
     } else if (cmd === "license") {
       const r = generateLicense(ROOT);
@@ -503,11 +567,17 @@ function main() {
       console.log("Re-run `npm run generate:metadata` to wire the license URI + hash into items.json.");
     } else if (cmd === "validate") {
       const r = validateProject(ROOT);
-      console.log(`OK — ${r.checked} item(s) valid: CHIP-0007 schema + data/metadata/license hashes agree with the real bytes.`);
+      console.log(
+        `OK — ${r.checked} item(s) valid: CHIP-0007 schema + data/metadata/license hashes agree with the real bytes.`,
+      );
     } else {
       console.error("Usage: node scripts/dig-nft.mjs <metadata|license|validate> [--store-id <id>]");
-      console.error("  metadata  generate CHIP-0007 metadata/*.json + items.json from images/ + collection.json");
-      console.error("            --store-id <id>  bake the REAL published store id into URIs (after `digstore deploy`)");
+      console.error(
+        "  metadata  generate CHIP-0007 metadata/*.json + items.json from images/ + collection.json",
+      );
+      console.error(
+        "            --store-id <id>  bake the REAL published store id into URIs (after `digstore deploy`)",
+      );
       console.error("  license   write the license chosen in collection.json into licenses/");
       console.error("  validate  re-verify schema + URI/hash agreement before minting");
       process.exit(2);
