@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](https://semver.org) and
 ## [0.3.1] - 2026-07-19
 
 ### Bug Fixes
-- **nft:** Reject an explicitly-empty `--store-id` (exit 2) instead of silently using the placeholder, and coerce an empty/whitespace programmatic `storeId` to the placeholder — so a typo can never bake an empty-store-id URI (`urn:dig:chia:/…`) or silently re-bake the placeholder into a minted NFT. (#1065)
+- **nft:** Reject empty --store-id; coerce empty storeId to placeholder (#1065)
 
 ## [0.3.0] - 2026-07-18
 
