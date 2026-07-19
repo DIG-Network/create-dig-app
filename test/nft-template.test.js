@@ -140,6 +140,27 @@ test("vendored tool bakes a real --store-id into every URI (subprocess, #350)", 
   }
 });
 
+test("vendored tool errors on an explicitly-empty --store-id (subprocess, #1065)", () => {
+  const root = freshDir();
+  try {
+    const dest = scaffoldCollection(root);
+    const script = join(dest, "scripts", "dig-nft.mjs");
+    execFileSync(process.execPath, [script, "license"], { cwd: dest });
+    let threw = false;
+    let stderr = "";
+    try {
+      execFileSync(process.execPath, [script, "metadata", "--store-id="], { cwd: dest, encoding: "utf8" });
+    } catch (e) {
+      threw = true;
+      stderr = String(e.stderr || e.message || "");
+    }
+    assert.ok(threw, "an explicitly-empty --store-id must exit non-zero (not silently use the placeholder)");
+    assert.match(stderr, /store-id/i, "the error explains the empty --store-id");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("vendored tool output is byte-identical to the canonical lib (anti-drift)", () => {
   const root = freshDir();
   try {

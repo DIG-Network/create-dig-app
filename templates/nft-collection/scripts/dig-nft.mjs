@@ -358,7 +358,8 @@ function readGeneratedLicense(root, collection, storeId = PLACEHOLDER_STORE_ID) 
 }
 
 function generateMetadata(root, opts = {}) {
-  const storeId = opts.storeId ?? PLACEHOLDER_STORE_ID;
+  // Empty/whitespace storeId falls back to the placeholder — never an empty-store-id URI. (#1065)
+  const storeId = opts.storeId && String(opts.storeId).trim() ? opts.storeId : PLACEHOLDER_STORE_ID;
   const collection = loadCollection(root);
   const imageFiles = listImages(root);
   const items = resolveItems(root, imageFiles);
@@ -471,12 +472,24 @@ function flagValue(args, name) {
   return undefined;
 }
 
+/** True if `name` appears in the argv slice as a flag (with or without a value). */
+function flagPresent(args, name) {
+  return args.some((a) => a === name || a.startsWith(`${name}=`));
+}
+
 function main() {
   const cmd = process.argv[2];
   const args = process.argv.slice(3);
   try {
     if (cmd === "metadata") {
       const storeId = flagValue(args, "--store-id");
+      if (flagPresent(args, "--store-id") && !(storeId && storeId.trim())) {
+        console.error(
+          "Error: --store-id was given but empty. Omit it for the pre-publish placeholder pass, " +
+            "or pass the real store id from `digstore deploy` (e.g. --store-id <id>).",
+        );
+        process.exit(2);
+      }
       const r = generateMetadata(ROOT, storeId ? { storeId } : {});
       console.log(`Generated ${r.count} CHIP-0007 metadata file(s) → metadata/ and the items.json manifest.`);
       if (storeId) {

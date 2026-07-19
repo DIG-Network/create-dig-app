@@ -1,6 +1,6 @@
 {
   "name": "create-dig-app",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Scaffold a wallet-wired, deployable DIG Network app — free, no mint. The JS front door for building dapps, frontends, and NFT collections on Chia.",
   "license": "MIT",
   "author": "DIG Network",

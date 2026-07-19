@@ -130,6 +130,20 @@ test("generateMetadata defaults to the placeholder store id when none is given (
   }
 });
 
+test("generateMetadata treats an empty/whitespace store id as the placeholder (no empty-store-id URI) (#1065)", () => {
+  const root = freshProject();
+  try {
+    writeFileSync(join(root, "images", "frog-1.png"), PNG_1x1);
+    generateMetadata(root, { storeId: "   " });
+    const media = JSON.parse(read(root, "items.json"))[0].media;
+    // Must NOT emit an empty-store-id URN (e.g. `urn:dig:chia:/images/...`); fall back to placeholder.
+    assert.doesNotMatch(media.data_uris[0], /urn:dig:chia:\//, "no empty store id in the URN");
+    assert.match(media.data_uris[0], /STORE_ID_AFTER_PUBLISH/, "falls back to the placeholder");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("generateMetadata uses a traits.csv when present (per-image traits)", () => {
   const root = freshProject();
   try {
