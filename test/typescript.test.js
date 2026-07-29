@@ -16,7 +16,7 @@ import { mkdtempSync, rmSync, existsSync, readFileSync, readdirSync, statSync } 
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { scaffold, templateNames, resolveTemplate } from "../lib/index.js";
+import { scaffold, resolveTemplate } from "../lib/index.js";
 
 /** Make a throwaway working directory; cleaned up after each test. */
 function freshDir() {
