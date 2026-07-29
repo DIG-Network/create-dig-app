@@ -21,7 +21,7 @@ import {
 // ---- license renderers (every template + default holder/year) ------------
 
 test("every LICENSES entry renders text with its title and SPDX-ish marker", () => {
-  for (const [id, lic] of Object.entries(LICENSES)) {
+  for (const id of Object.keys(LICENSES)) {
     const txt = licenseText(id, { holder: "DIG Labs", year: 2026 });
     assert.equal(typeof txt, "string");
     assert.ok(txt.length > 0, `${id} renders non-empty text`);

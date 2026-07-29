@@ -26,10 +26,14 @@ jobs:
       # create-dig-app ships with ZERO runtime dependencies; the only dev dependency is the coverage
       # runner (c8), pinned to a version that supports the whole node 18/20/22 matrix. Install it so
       # the suite runs under measured coverage with a CI-enforced ≥80% floor.
-      - name: Install dev dependencies (c8, prettier)
+      - name: Install dev dependencies (c8, prettier, eslint)
         run: npm ci
       - name: Format check (prettier)
         run: npm run format:check
+      # The strict Lint gate (CLAUDE.md §2.4a): ESLint 9 flat config over the tool's own
+      # plain-ESM source (bin/ + lib/ + test/); the template trees are ignored (own build gate).
+      - name: Lint (eslint)
+        run: npm run lint
       # `npm run coverage` runs the same `node --test` suite (auto-discovering test/) under c8 with
       # the thresholds in .c8rc.json (lines/branches/functions/statements ≥ 80, scoped to lib/ +
       # bin/). c8 sets NODE_V8_COVERAGE so the spawned bin subprocess (test/bin.test.js) is measured
