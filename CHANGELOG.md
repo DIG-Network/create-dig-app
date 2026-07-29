@@ -4,6 +4,11 @@ All notable changes to this project are documented here.
 This project adheres to [Semantic Versioning](https://semver.org) and
 [Conventional Commits](https://www.conventionalcommits.org).
 
+## [0.3.3] - 2026-07-29
+
+### CI
+- **create-dig-app:** Add strict ESLint 9 flat-config lint gate (#737)
+
 ## [0.3.2] - 2026-07-19
 
 ### Chores
